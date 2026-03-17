@@ -1,14 +1,22 @@
 import { useState } from 'react';
+import api from '../api';
 
 const DetectDisease = () => {
   const [dragOver, setDragOver] = useState(false);
   const [image, setImage] = useState(null);
   const [fileName, setFileName] = useState('');
+  const [imageFile, setImageFile] = useState(null);  // ← added
+  const [loading, setLoading] = useState(false);      // ← added
+  const [result, setResult] = useState(null);         // ← added
+  const [error, setError] = useState(null);           // ← added
 
   const handleFile = (file) => {
     if (file) {
       setImage(URL.createObjectURL(file));
       setFileName(file.name);
+      setImageFile(file);   // ← added
+      setResult(null);      // ← reset result on new image
+      setError(null);       // ← reset error on new image
     }
   };
 
@@ -20,6 +28,26 @@ const DetectDisease = () => {
 
   const handleChange = (e) => {
     handleFile(e.target.files[0]);
+  };
+
+  // ← added: sends image to backend
+  const handleDetect = async () => {
+    if (!imageFile) return;
+    try {
+      setLoading(true);
+      setError(null);
+      const formData = new FormData();
+      formData.append('image', imageFile);
+      const response = await api.post('/api/detect', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setResult(response.data.result);
+    } catch (err) {
+      console.error('Detection failed:', err);
+      setError('Detection failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -92,10 +120,50 @@ const DetectDisease = () => {
               )}
             </div>
 
+            {/* ← updated: calls handleDetect, shows loading state */}
             {image && (
-              <button style={styles.analyzeBtn}>
-                Run Disease Analysis
+              <button
+                style={{
+                  ...styles.analyzeBtn,
+                  opacity: loading ? 0.7 : 1,
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                }}
+                onClick={handleDetect}
+                disabled={loading}
+              >
+                {loading ? 'Analyzing...' : 'Run Disease Analysis'}
               </button>
+            )}
+
+            {/* ← added: error message */}
+            {error && (
+              <div style={styles.errorBox}>
+                <p style={styles.errorText}>{error}</p>
+              </div>
+            )}
+
+            {/* ← added: result display */}
+            {result && (
+              <div style={styles.resultBox}>
+                <p style={styles.resultLabel}>Detection Result</p>
+                <div style={styles.resultRow}>
+                  <span style={styles.resultKey}>Disease</span>
+                  <span style={styles.resultValue}>{result.disease_name || result.disease || 'N/A'}</span>
+                </div>
+                <div style={styles.resultRow}>
+                  <span style={styles.resultKey}>Confidence</span>
+                  <span style={styles.resultBadge}>{result.confidence_level || result.confidence || 'N/A'}</span>
+                </div>
+                <div style={styles.resultRow}>
+                  <span style={styles.resultKey}>Symptoms</span>
+                  <span style={styles.resultValue}>{result.symptoms_observed || result.symptoms || 'N/A'}</span>
+                </div>
+                <div style={styles.resultDivider} />
+                <p style={styles.resultKey}>Recommended Treatment</p>
+                <p style={styles.resultTreatment}>{result.recommended_treatment || result.treatment || 'N/A'}</p>
+                <p style={styles.resultKey}>Preventive Measures</p>
+                <p style={styles.resultTreatment}>{result.preventive_measures || result.prevention || 'N/A'}</p>
+              </div>
             )}
           </div>
 
@@ -309,9 +377,73 @@ const styles = {
     borderRadius: '10px',
     fontSize: '1.05rem',
     fontWeight: '700',
-    cursor: 'pointer',
     letterSpacing: '0.5px',
     boxShadow: '0 4px 16px rgba(45,106,45,0.3)',
+  },
+  errorBox: {
+    background: '#fff5f5',
+    border: '1px solid #ffcccc',
+    borderLeft: '4px solid #e53e3e',
+    borderRadius: '8px',
+    padding: '12px 16px',
+  },
+  errorText: {
+    fontSize: '0.85rem',
+    color: '#c53030',
+    margin: 0,
+  },
+  resultBox: {
+    background: 'white',
+    border: '1px solid #deeede',
+    borderRadius: '12px',
+    padding: '20px 22px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+  },
+  resultLabel: {
+    fontSize: '0.72rem',
+    fontWeight: '700',
+    color: '#2d6a2d',
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
+    marginBottom: '14px',
+  },
+  resultRow: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: '10px',
+  },
+  resultKey: {
+    fontSize: '0.82rem',
+    fontWeight: '700',
+    color: '#555',
+    margin: '0 0 6px',
+  },
+  resultValue: {
+    fontSize: '0.85rem',
+    color: '#333',
+    maxWidth: '60%',
+    textAlign: 'right',
+  },
+  resultBadge: {
+    background: '#f0faf0',
+    border: '1px solid #c8e6c9',
+    color: '#2d6a2d',
+    padding: '3px 10px',
+    borderRadius: '4px',
+    fontSize: '0.78rem',
+    fontWeight: '700',
+  },
+  resultDivider: {
+    height: '1px',
+    background: '#f0f0f0',
+    margin: '12px 0',
+  },
+  resultTreatment: {
+    fontSize: '0.85rem',
+    color: '#444',
+    lineHeight: '1.6',
+    margin: '0 0 12px',
   },
   guideList: {
     display: 'flex',
