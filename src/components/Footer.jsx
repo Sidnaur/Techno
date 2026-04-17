@@ -10,8 +10,7 @@ const Footer = () => (
           🌿 <span style={styles.logoText}>AgriVision</span>
         </div>
         <p style={styles.description}>
-          AI-powered plant disease detection for tomato, chili, and eggplant.
-          Helping farmers protect their crops.
+          AI-powered plant disease detection for all types of crops. Helping farmers protect their harvests.
         </p>
       </div>
 

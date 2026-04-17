@@ -8,54 +8,57 @@ const posts = [
     id: 1,
     image: tomatoImg,
     category: "Disease Management",
-    date: "February 28, 2026",
-    author: "Dr. Maria Santos",
-    authorTitle: "Plant Pathologist, PhilRice",
-    title: "How to Identify Tomato Diseases Early",
-    excerpt: "Learn the telltale signs of common tomato diseases and how to catch them before they spread across your garden.",
-    readTime: "5 min read",
-    source: "A Review of the Most Common Diseases That Undermine Tomato Cultivation – Agronomy, MDPI (Scopus-indexed), 2021",
-    sourceUrl: "https://www.mdpi.com/2073-4395/11/11/2188",
+    date: "April 15, 2026",
+    author: "Dr. Zhijuan Tang",
+    authorTitle: "Plant Cell Journal",
+    title: "How Plants Fight Back: Understanding Disease Resistance and Tolerance",
+    excerpt: "Plants have two powerful strategies to survive diseases—resistance and tolerance. Learn how both work to keep your crops healthy.",
+    readTime: "6 min read",
+    source: "Defense strategies for plant health: Disease resistance and tolerance – The Plant Cell, Oxford Academic (Scopus-indexed), 2025",
+    sourceUrl: "https://pubmed.ncbi.nlm.nih.gov/40721289/",
     content: [
-      "Early detection of tomato diseases significantly reduces crop loss. The most common diseases affecting tomato crops in Southeast Asia include Early Blight, Late Blight, and Septoria Leaf Spot.",
-      "According to the Philippine Rice Research Institute (2024), farmers who identify disease symptoms within the first 7 days of onset reduce crop loss by up to 60% compared to those who delay treatment.",
-      "Key indicators to monitor include: discoloration patterns on leaf surfaces, unusual spots or lesions, wilting despite adequate watering, and abnormal fruit development.",
+      "When pathogens attack, plants don't just give up. They have evolved sophisticated defense strategies to survive. Scientists have identified two main approaches: resistance and tolerance. Both are essential for keeping crops healthy, but they work in very different ways.",
+      "Resistance is like a plant's immune system. It allows the plant to fight back against invading pathogens—containing them, killing them, or stopping their spread. This is the strategy most farmers are familiar with, and it's what many crop varieties are bred for.",
+      "But there's another strategy that's getting more attention from researchers: tolerance. Tolerant plants stay healthy even when infected. Instead of fighting the pathogen directly, they learn to live with it without showing severe symptoms or losing much yield. This is exciting because tolerance doesn't put as much pressure on pathogens to evolve and become stronger, making it a more lasting solution for farmers.",
+      "Recent studies published in The Plant Cell (2025) show that tolerance works through several clever mechanisms: clearing out harmful protein buildup, activating cellular cleanup processes, and wisely allocating resources to protect the most important parts of the plant. Understanding these natural strategies helps scientists develop better crop varieties that can withstand diseases without relying heavily on chemicals.",
     ],
   },
   {
     id: 2,
     image: chiliImg,
-    category: "Pest Control",
-    date: "February 20, 2026",
-    author: "Engr. Jose Reyes",
-    authorTitle: "Agricultural Extension Officer, DA-Region XI",
-    title: "Protecting Chili Plants from Whiteflies",
-    excerpt: "Whiteflies are the primary vector for chili leaf curl virus. Here's how to keep them away from your crops.",
-    readTime: "4 min read",
-    source: "Topical Spray of dsRNA Inhibits Chilli Leaf Curl Virus Transmission by Bemisia tabaci – PMC / MDPI Cells, 2022",
-    sourceUrl: "https://pmc.ncbi.nlm.nih.gov/articles/PMC8909865/",
+    category: "Sustainable Farming",
+    date: "April 10, 2026",
+    author: "Dr. Maria Alexandra Cucu",
+    authorTitle: "Agronomy Journal",
+    title: "Eco-Friendly Disease Control: Working With Nature",
+    excerpt: "Discover how crop rotation, beneficial organisms, and smart water management can protect your plants without harsh chemicals.",
+    readTime: "5 min read",
+    source: "Utilizing Environmentally Friendly Techniques for the Sustainable Control of Plant Pathogens – Agronomy, MDPI (Scopus-indexed), 2025",
+    sourceUrl: "https://www.mdpi.com/2073-4395/15/7/1551",
     content: [
-      "Whiteflies (Bemisia tabaci) are the primary vector for Chili Leaf Curl Virus (ChiLCV), one of the most devastating diseases affecting chili production in the Philippines.",
-      "The Department of Agriculture's IPM Guide (2023) recommends a combination of yellow sticky traps, neem-based insecticides, and reflective mulches as the most effective non-chemical management strategy.",
-      "Farmers are advised to inspect the underside of leaves weekly, as early-stage whitefly colonies are often missed during routine field checks.",
+      "Controlling plant diseases doesn't always mean reaching for a chemical spray. More and more farmers are turning to environmentally friendly techniques that work with nature, not against it. These methods are better for the soil, safer for beneficial insects, and often more affordable in the long run.",
+      "According to a comprehensive review published in Agronomy journal (2025), some of the most effective eco-friendly strategies include: crop rotation (changing what you plant in each field every season to break disease cycles), intercropping (planting different crops together to confuse pests), and maintaining biodiversity (which encourages natural predators and improves soil health).",
+      "Biological control is another powerful tool. This means introducing beneficial microorganisms—like certain bacteria and fungi—that naturally fight off plant pathogens. These helpful microbes can outcompete harmful ones, produce natural antibiotics, or even trigger the plant's own defense system. Common examples include Bacillus, Trichoderma, and Pseudomonas species, which are now available as commercial products.",
+      "Simple practices like mulching, soil solarization (using clear plastic to heat the soil and kill pathogens), and careful water management can also make a big difference. Watering in the morning, for instance, gives leaves time to dry during the day, which reduces the humidity that many fungi need to grow. These techniques work together as part of Integrated Pest Management (IPM)—a holistic approach that uses chemical controls only as a last resort.",
     ],
   },
   {
     id: 3,
     image: eggplantImg,
-    category: "Crop Management",
-    date: "February 10, 2026",
-    author: "Dr. Liza Cruz",
-    authorTitle: "Senior Agronomist, Bureau of Plant Industry",
-    title: "Managing Eggplant Blight in Humid Conditions",
-    excerpt: "Phomopsis blight thrives in wet weather. Discover proven strategies to protect your eggplant harvest.",
-    readTime: "6 min read",
-    source: "Biorational Phomopsis Blight Management in Eggplants Using Rhizosphere Bacteria – ScienceDirect / Biological Control, 2025",
-    sourceUrl: "https://www.sciencedirect.com/science/article/pii/S2307410825001129",
+    category: "Plant Science",
+    date: "April 5, 2026",
+    author: "Dr. Samuel W. Wilkinson",
+    authorTitle: "Scopus D1 Journal",
+    title: "Plant Defense Strategies: From Quick Responses to Long-Term Adaptation",
+    excerpt: "Explore how plants defend themselves over different timescales—from immediate chemical reactions to genetic changes passed down to future generations.",
+    readTime: "7 min read",
+    source: "Surviving in a Hostile World: Plant Strategies to Resist Pests and Diseases – MTMT / Scopus D1, 2026",
+    sourceUrl: "https://m2.mtmt.hu/api/publication/30904453",
     content: [
-      "Phomopsis blight (caused by Phomopsis vexans) is particularly prevalent during the rainy season, when humidity levels exceed 80% for prolonged periods.",
-      "According to the Bureau of Plant Industry (2023), the use of certified disease-free seeds combined with a 3-year crop rotation schedule reduces Phomopsis incidence by up to 75%.",
-      "Field trials conducted in Davao Region showed that early morning irrigation, which allows foliage to dry before nightfall, significantly reduces fungal spore germination rates.",
+      "Plants are constantly under attack from hungry insects and disease-causing pathogens. Yet they don't just stand there and take it. A major review published in a Scopus D1-ranked journal (2026) describes the remarkable strategies plants use to survive in a hostile world—and these strategies work on timescales ranging from seconds to generations.",
+      "When a pathogen attacks, plants respond within seconds. They produce reactive molecules that signal danger, strengthen cell walls to block invaders, and release compounds that directly fight off the threat. This is the plant's emergency response system, and it's happening all the time in your garden or field.",
+      "On a longer timescale—hours to days—plants activate more complex defenses. They produce specific proteins and chemicals targeted at the invading pathogen. They can even send warning signals to nearby plants through underground networks or the air, preparing their neighbors for an incoming attack.",
+      "Perhaps most fascinating is how plants adapt over generations. Through a process called epigenetic modification, plants can 'remember' past attacks and pass that knowledge to their offspring. This means the children of a plant that survived a disease may be better equipped to handle the same threat. Understanding these natural strategies helps researchers develop hardier crop varieties and better farming practices that work with plants' own remarkable abilities.",
     ],
   },
 ];
@@ -64,7 +67,7 @@ const Blog = () => {
   const [activePost, setActivePost] = useState(null);
   const [activeCategory, setActiveCategory] = useState('All');
 
-  const categories = ['All', 'Disease Management', 'Pest Control', 'Crop Management'];
+  const categories = ['All', 'Disease Management', 'Sustainable Farming', 'Plant Science'];
 
   const filtered = posts.filter(p =>
     activeCategory === 'All' || p.category === activeCategory
@@ -119,13 +122,13 @@ const Blog = () => {
               <p style={styles.citationText}>
                 {post.source}.{' '}
                 <a href={post.sourceUrl} target="_blank" rel="noreferrer" style={styles.citationLink}>
-                  {post.sourceUrl}
+                  View Publication →
                 </a>
               </p>
               <p style={styles.citationDisclaimer}>
-                The information in this article is based on verified agricultural research and peer-reviewed
-                scientific publications indexed in Scopus and PubMed Central. AgriVision does not claim authorship of the referenced studies.
-                For field-specific guidance, consult your local agricultural extension officer.
+                This article is based on verified, open-access research from Scopus-indexed, peer-reviewed journals.
+                The information is intended for educational purposes. For field-specific guidance, consult your local
+                agricultural extension officer.
               </p>
             </div>
           </div>
@@ -144,8 +147,8 @@ const Blog = () => {
             <h1 style={styles.title}>Agricultural Blog</h1>
           </div>
           <p style={styles.subtitle}>
-            Evidence-based tips, guides, and field insights on plant disease management —
-            sourced from trusted agricultural institutions and extension officers.
+            Evidence-based insights on plant health, disease management, and sustainable farming —
+            sourced from Scopus-indexed, peer-reviewed research.
           </p>
         </div>
       </div>
@@ -203,7 +206,7 @@ const Blog = () => {
                       <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
                       <polyline points="14 2 14 8 20 8"/>
                     </svg>
-                    <span style={styles.sourceTagText}>Peer-Reviewed Source</span>
+                    <span style={styles.sourceTagText}>Scopus-Indexed</span>
                   </div>
                   <button
                     style={styles.readMoreBtn}
@@ -220,9 +223,9 @@ const Blog = () => {
         {/* Disclaimer */}
         <div style={styles.disclaimer}>
           <p style={styles.disclaimerText}>
-            All articles published on AgriVision Blog are based on verified research from peer-reviewed journals
-            indexed in Scopus, ScienceDirect, and PubMed Central. Content is reviewed for accuracy but should
-            not replace professional agronomic consultation.
+            All articles on AgriVision Blog are based on verified, open-access research from Scopus-indexed,
+            peer-reviewed journals. Content is summarized for educational purposes and should not replace
+            professional agronomic consultation.
           </p>
         </div>
       </div>

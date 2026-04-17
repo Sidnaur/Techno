@@ -45,8 +45,7 @@ const Hero = () => {
         </h1>
 
         <p style={styles.subtitle}>
-          Upload a photo of your tomato, chili, or eggplant leaf and get
-          instant AI-powered disease diagnosis with treatment recommendations.
+          Upload a photo of any plant leaf and receive instant AI-powered disease detection with recommended treatments.
         </p>
 
         <div style={styles.buttons}>

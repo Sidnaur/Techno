@@ -23,32 +23,18 @@ const About = () => {
           <h2 style={styles.aiTitle}>AI for Healthier Crops</h2>
           <div style={styles.divider} />
           <p style={styles.aiPara}>
-            AgriVision is a plant disease detection system that uses deep learning to identify diseases
-            in tomato, chili, and eggplant leaves. Simply upload a photograph of an affected leaf,
-            and our AI will analyze it within seconds.
+            AgriVision is a plant disease detection system that uses deep learning to identify diseases in crop leaves. Simply upload a photograph of an affected leaf, and our AI will analyze it within seconds.
           </p>
           <p style={styles.aiPara}>
             Our system is designed with simplicity in mind — no technical expertise required.
             Whether you're a farmer in the field or a gardener at home, AgriVision helps you
             diagnose problems early and take action before crop damage escalates.
           </p>
-          <div style={styles.highlights}>
-            {[
-              { value: '98%', label: 'Detection Accuracy' },
-              { value: '11', label: 'Disease Targets' },
-              { value: '3', label: 'Crop Varieties' },
-            ].map((h, i) => (
-              <div key={i} style={styles.highlight}>
-                <span style={styles.highlightValue}>{h.value}</span>
-                <span style={styles.highlightLabel}>{h.label}</span>
-              </div>
-            ))}
-          </div>
         </div>
         <div style={styles.aiImageBox}>
           <img src={aboutImg} alt="AI Detection" style={styles.aiImage} />
           <div style={styles.imageCaption}>
-            AgriVision AI analyzing leaf conditions in real-time
+            AgriVision AI analyzing leaf conditions to provide instant disease detection and treatment recommendations.
           </div>
         </div>
       </div>
@@ -181,31 +167,6 @@ const styles = {
     color: '#555',
     lineHeight: '1.8',
     marginBottom: '16px',
-  },
-  highlights: {
-    display: 'flex',
-    gap: '32px',
-    marginTop: '32px',
-    paddingTop: '24px',
-    borderTop: '1px solid #e8f5e9',
-  },
-  highlight: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
-  },
-  highlightValue: {
-    fontSize: '1.8rem',
-    fontWeight: '800',
-    color: '#1a3d1a',
-    lineHeight: 1,
-  },
-  highlightLabel: {
-    fontSize: '0.75rem',
-    color: '#888',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-    fontWeight: '600',
   },
   aiImageBox: { flex: 1, minWidth: '280px' },
   aiImage: {

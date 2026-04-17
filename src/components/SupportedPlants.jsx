@@ -1,35 +1,35 @@
 import { useState } from 'react';
-import tomatoImg from '../assets/TOMATO LEAF Fragrance Oil Choose Your Size - Etsy.jpg';
-import chiliImg from '../assets/chilly.jpg';
-import eggplantImg from '../assets/African Eggplant, Nya Nya Chungu (Solanum aethiopicum) - Medium Coconut Coir Pot.jpg';
+import vegetablesImg from '../assets/Vegetables.jpg';
+import ornamentalsImg from '../assets/Ornamentals.jpg';
+import fruitsImg from '../assets/Fruits.jpg';
 
 const SupportedPlants = () => {
   const [activeCard, setActiveCard] = useState(null);
 
   const plants = [
     {
-      image: tomatoImg,
-      name: "Tomato",
-      scientific: "Solanum lycopersicum",
-      diseases: ["Early Blight", "Late Blight", "Leaf Mold", "Septoria Leaf Spot"],
-      count: 4,
-      fact: "Tomato is the most common crop affected by fungal diseases worldwide.",
+      image: vegetablesImg,
+      name: "Vegetables",
+      scientific: "e.g. Tomato, Eggplant, Cabbage, Carrot",
+      diseases: ["Leaf Spot", "Early Blight", "Late Blight", "Powdery Mildew", "Bacterial Spot"],
+      count: 5,
+      fact: "Vegetable crops are highly vulnerable to fungal and bacterial diseases, especially in humid environments.",
     },
     {
-      image: chiliImg,
-      name: "Chili Pepper",
-      scientific: "Capsicum annuum",
-      diseases: ["Leaf Curl Virus", "Anthracnose", "Bacterial Wilt", "Cercospora Leaf Spot"],
-      count: 4,
-      fact: "Chili plants are highly susceptible to virus transmission by whiteflies.",
+      image: ornamentalsImg,
+      name: "Ornamentals",
+      scientific: "e.g. Rose, Orchid, Hibiscus, Bougainvillea",
+      diseases: ["Powdery Mildew", "Leaf Spot", "Rust", "Blight", "Bacterial Leaf Spot"],
+      count: 5,
+      fact: "Ornamental plants often suffer from leaf diseases due to frequent watering and close planting conditions.",
     },
     {
-      image: eggplantImg,
-      name: "Eggplant",
-      scientific: "Solanum melongena",
-      diseases: ["Phomopsis Blight", "Verticillium Wilt", "Flea Beetle Damage"],
-      count: 3,
-      fact: "Eggplant diseases often spread through contaminated soil and water.",
+      image: fruitsImg,
+      name: "Fruit-Bearing Plants",
+      scientific: "e.g. Mango, Banana, Papaya, Citrus",
+      diseases: ["Anthracnose", "Leaf Curl", "Citrus Canker", "Scab", "Powdery Mildew"],
+      count: 5,
+      fact: "Fruit-bearing plants are prone to diseases that affect leaves, impacting yield, which can reduce photosynthesis."
     },
   ];
 
@@ -38,12 +38,17 @@ const SupportedPlants = () => {
       <div style={styles.header}>
         <div style={styles.titleRow}>
           <div style={styles.titleBar} />
-          <h2 style={styles.heading}>Supported Crops</h2>
+          <h2 style={styles.heading}>Supported Crops (Expanding)</h2>
           <div style={styles.titleBar} />
         </div>
+
         <p style={styles.subheading}>
-          The AgriVision AI system is currently trained to identify diseases in the following crop varieties.
-          Early and accurate detection helps farmers take timely action to protect their harvest.
+          The AgriVision AI system detects plant diseases across selected crop categories using leaf images.
+          You may upload any plant leaf, but detection is most accurate for the crops listed below.
+        </p>
+
+        <p style={{ ...styles.subheading, marginTop: '10px', fontSize: '0.9rem', color: '#666' }}>
+          *General detection is supported, but results may vary for unsupported crops.
         </p>
       </div>
 
@@ -64,18 +69,24 @@ const SupportedPlants = () => {
             <div style={styles.imageWrapper}>
               <img src={plant.image} alt={plant.name} style={styles.image} />
               <div style={styles.imageOverlay} />
+
               <div style={styles.imageLabel}>
                 <h3 style={styles.plantName}>{plant.name}</h3>
                 <p style={styles.scientific}>{plant.scientific}</p>
               </div>
-              <div style={styles.countBadge}>{plant.count} Detectable Diseases</div>
+
+              <div style={styles.countBadge}>
+                {plant.count} Common Conditions
+              </div>
             </div>
 
             <div style={styles.cardBody}>
               <div style={styles.factBox}>
                 <p style={styles.factText}>{plant.fact}</p>
               </div>
-              <p style={styles.diseasesLabel}>Identified Disease Targets</p>
+
+              <p style={styles.diseasesLabel}>Common Detectable Conditions</p>
+
               <ul style={styles.diseaseList}>
                 {plant.diseases.map((disease, i) => (
                   <li key={i} style={styles.diseaseItem}>
@@ -85,22 +96,6 @@ const SupportedPlants = () => {
                 ))}
               </ul>
             </div>
-          </div>
-        ))}
-      </div>
-
-      <div style={styles.statsRow}>
-        {[
-          { value: '11', label: 'Total Disease Targets' },
-          { value: '3', label: 'Crop Varieties' },
-          { value: '98%', label: 'Detection Accuracy' },
-        ].map((stat, i) => (
-          <div key={i} style={{
-            ...styles.statItem,
-            borderRight: i < 2 ? '1px solid #d0e8d0' : 'none',
-          }}>
-            <span style={styles.statValue}>{stat.value}</span>
-            <span style={styles.statLabel}>{stat.label}</span>
           </div>
         ))}
       </div>
@@ -256,38 +251,6 @@ const styles = {
     color: '#2d6a2d',
     fontWeight: '900',
     fontSize: '1rem',
-  },
-  statsRow: {
-    display: 'flex',
-    justifyContent: 'center',
-    background: 'white',
-    border: '1px solid #d0e8d0',
-    borderRadius: '10px',
-    maxWidth: '600px',
-    margin: '0 auto',
-    overflow: 'hidden',
-  },
-  statItem: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '20px 16px',
-    gap: '4px',
-  },
-  statValue: {
-    fontSize: '1.8rem',
-    fontWeight: '800',
-    color: '#1a3d1a',
-    lineHeight: 1,
-  },
-  statLabel: {
-    fontSize: '0.72rem',
-    color: '#777',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-    fontWeight: '600',
-    textAlign: 'center',
   },
 };
 
