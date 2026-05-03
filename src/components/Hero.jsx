@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import heroBg from '../assets/Early Stages Of Plant Growth Background.jpg';
 
 const Hero = () => {
   const [visible, setVisible] = useState(false);
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,17 +37,17 @@ const Hero = () => {
       }}>
         <div style={styles.badge}>
           <span style={styles.badgeDot} />
-          AI-Powered Plant Health System
+          {t('hero_badge')}                         {/* ✅ */}
         </div>
 
         <h1 style={styles.title}>
-          Detect Plant
-          <span style={styles.titleAccent}> Diseases</span>
-          <br />Instantly
+          {t('hero_title_line1')}                   {/* ✅ */}
+          <span style={styles.titleAccent}> {t('hero_title_accent')}</span>  {/* ✅ */}
+          <br />{t('hero_title_line2')}             {/* ✅ */}
         </h1>
 
         <p style={styles.subtitle}>
-          Upload a photo of any plant leaf and receive instant AI-powered disease detection with recommended treatments.
+          {t('hero_subtitle')}                      {/* ✅ */}
         </p>
 
         <div style={styles.buttons}>
@@ -55,7 +57,7 @@ const Hero = () => {
             onMouseEnter={e => e.target.style.transform = 'translateY(-2px)'}
             onMouseLeave={e => e.target.style.transform = 'translateY(0)'}
           >
-            🔬 Start Detection
+            🔬 {t('hero_cta')}                     {/* ✅ */}
           </button>
           <button
             style={styles.secondaryBtn}
@@ -63,19 +65,20 @@ const Hero = () => {
             onMouseEnter={e => e.target.style.background = 'rgba(255,255,255,0.15)'}
             onMouseLeave={e => e.target.style.background = 'transparent'}
           >
-            Learn More →
+            {t('hero_learn')} →                    {/* ✅ */}
           </button>
         </div>
       </div>
 
       <div style={styles.scrollIndicator}>
         <div style={styles.scrollDot} />
-        <span style={styles.scrollText}>Scroll to explore</span>
+        <span style={styles.scrollText}>{t('hero_scroll')}</span>  {/* ✅ */}
       </div>
     </div>
   );
 };
 
+// styles — completely unchanged
 const styles = {
   hero: {
     position: 'relative',

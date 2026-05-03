@@ -1,34 +1,36 @@
 import { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext.jsx';
 import vegetablesImg from '../assets/Vegetables.jpg';
 import ornamentalsImg from '../assets/Ornamentals.jpg';
 import fruitsImg from '../assets/Fruits.jpg';
 
 const diseases = [
   // VEGETABLES
-  { plant: "Vegetables", image: vegetablesImg, category: "Vegetables", name: "Leaf Spot", description: "A fungus that attacks leaves, causing spots that can kill the leaf.", symptoms: "Small brown or black circles on leaves. Often have yellow edges. Spots can grow together and make leaves die.", treatment: "Spray copper or chlorothalonil fungicide. Pick off and throw away bad leaves. Give plants enough space for air flow. Water soil only, not leaves. Change where you plant each year." },
-  { plant: "Vegetables", image: vegetablesImg, category: "Vegetables", name: "Early Blight", description: "A fungus that starts on lower leaves and moves up the plant in warm, wet weather.", symptoms: "Dark rings like a bullseye on lower leaves. Yellow around the spots. Leaves fall off early. Dark spots on stem near soil.", treatment: "Spray fungicide at first sign. Remove infected lower leaves. Put mulch to stop soil from splashing. Change planting spot every 2-3 years. Use resistant types if available." },
-  { plant: "Vegetables", image: vegetablesImg, category: "Vegetables", name: "Late Blight", description: "A very dangerous fungus that kills plants fast. Same one that caused Irish Potato Famine.", symptoms: "Wet-looking dark spots on leaves and stems. White fuzzy mold on leaf underside when humid. Plant dies quickly. Dark spots on fruits.", treatment: "Spray fungicide before disease appears. Remove and destroy infected plants right away. Don't water from above. Use resistant types. Use strong fungicides for active infection." },
-  { plant: "Vegetables", image: vegetablesImg, category: "Vegetables", name: "Powdery Mildew", description: "A white powder-like fungus that grows on leaves in dry conditions.", symptoms: "White powder on top of leaves. Leaves turn yellow, curl up, and dry out. Less fruit grows.", treatment: "Spray sulfur or potassium bicarbonate. Use neem oil for organic option. Improve air flow. Don't use too much nitrogen fertilizer. Use strong fungicides for bad cases." },
-  { plant: "Vegetables", image: vegetablesImg, category: "Vegetables", name: "Downy Mildew", description: "A fungus that loves wet weather and causes yellow spots and fuzzy growth.", symptoms: "Yellow or pale green spots on top of leaves. Purple-gray fuzzy growth underneath. Leaves curl and die. Leaves fall off fast in wet weather.", treatment: "Spray phosphorous acid fungicide. Remove infected leaves. Improve drainage and air flow. Don't water in evening. Use resistant types. Spray copper to prevent." },
-  { plant: "Vegetables", image: vegetablesImg, category: "Vegetables", name: "Bacterial Spot", description: "Bacteria that cause spots on leaves and fruit, spreading fast in wet conditions.", symptoms: "Small wet spots turn dark brown to black. Raised rough spots on fruit. Yellow rings around leaf spots. Leaves drop in bad cases.", treatment: "Spray copper with mancozeb. Use clean seeds and seedlings. Don't water from above. Clean up plant waste after harvest. Change planting spot every 2-3 years." },
+  { plant: "Vegetables", image: vegetablesImg, category: "Vegetables", name: "Leaf Spot", descriptionKey: "plants_d_leaf_spot_desc", symptomsKey: "plants_d_leaf_spot_symptoms", treatmentKey: "plants_d_leaf_spot_treatment" },
+  { plant: "Vegetables", image: vegetablesImg, category: "Vegetables", name: "Early Blight", descriptionKey: "plants_d_early_blight_desc", symptomsKey: "plants_d_early_blight_symptoms", treatmentKey: "plants_d_early_blight_treatment" },
+  { plant: "Vegetables", image: vegetablesImg, category: "Vegetables", name: "Late Blight", descriptionKey: "plants_d_late_blight_desc", symptomsKey: "plants_d_late_blight_symptoms", treatmentKey: "plants_d_late_blight_treatment" },
+  { plant: "Vegetables", image: vegetablesImg, category: "Vegetables", name: "Powdery Mildew", descriptionKey: "plants_d_powdery_mildew_desc", symptomsKey: "plants_d_powdery_mildew_symptoms", treatmentKey: "plants_d_powdery_mildew_treatment" },
+  { plant: "Vegetables", image: vegetablesImg, category: "Vegetables", name: "Downy Mildew", descriptionKey: "plants_d_downy_mildew_desc", symptomsKey: "plants_d_downy_mildew_symptoms", treatmentKey: "plants_d_downy_mildew_treatment" },
+  { plant: "Vegetables", image: vegetablesImg, category: "Vegetables", name: "Bacterial Spot", descriptionKey: "plants_d_bacterial_spot_desc", symptomsKey: "plants_d_bacterial_spot_symptoms", treatmentKey: "plants_d_bacterial_spot_treatment" },
 
   // ORNAMENTALS
-  { plant: "Ornamentals", image: ornamentalsImg, category: "Ornamentals", name: "Powdery Mildew", description: "White powder-like fungus that covers leaves and flowers in dry weather.", symptoms: "White or gray powder on leaves, stems, and flowers. Plant grows slow. New leaves look weird. Leaves drop early. Plant looks weak.", treatment: "Spray potassium bicarbonate or sulfur. Use neem oil or horticultural oil. Give plants enough space for air flow. Don't water from above. Remove and destroy badly infected parts." },
-  { plant: "Ornamentals", image: ornamentalsImg, category: "Ornamentals", name: "Leaf Spot", description: "Fungus that makes round or odd-shaped spots on leaves.", symptoms: "Round or odd-shaped spots that are brown, black, or tan. Spots may have dark edges or yellow rings. Spots grow together causing big dead areas.", treatment: "Spray chlorothalonil or copper. Remove infected leaves from plant and ground. Water at base to keep leaves dry. Thin plants for better air flow. Spray protective fungicides to prevent." },
-  { plant: "Ornamentals", image: ornamentalsImg, category: "Ornamentals", name: "Rust", description: "Orange-brown powder-like fungus that grows under leaves.", symptoms: "Small powdery spots under leaves that are orange-brown or rust color. Yellow spots on top of leaves. Lots of leaf drop. Plant can't make food well.", treatment: "Spray myclobutanil fungicide. Remove and destroy infected leaves. Don't water from above. Improve air flow. Use sulfur dust for mild cases." },
-  { plant: "Ornamentals", image: ornamentalsImg, category: "Ornamentals", name: "Blight", description: "Gray mold fungus that causes leaves and stems to rot and die fast.", symptoms: "Leaves, stems, and flowers turn brown and die fast. Gray-brown fuzzy mold when humid. Wet-looking spots. Branches die back.", treatment: "Spray iprodione fungicide. Remove dead and infected parts. Lower humidity and improve air flow. Don't hurt plants. Use copper products to prevent." },
-  { plant: "Ornamentals", image: ornamentalsImg, category: "Ornamentals", name: "Bacterial Leaf Spot", description: "Bacteria that cause small wet spots that turn into black spots with yellow edges.", symptoms: "Small wet spots turn brown or black with yellow rings. Spots may have corners (blocked by veins). Leaves drop. Stems get cankers.", treatment: "Spray copper with mancozeb. Remove infected leaves. Don't water from above. Use clean seeds and plants. Change planting spot every 2 years. Destroy very infected plants." },
+  { plant: "Ornamentals", image: ornamentalsImg, category: "Ornamentals", name: "Powdery Mildew", descriptionKey: "plants_d_powdery_mildew_desc_orn", symptomsKey: "plants_d_powdery_mildew_symptoms_orn", treatmentKey: "plants_d_powdery_mildew_treatment_orn" },
+  { plant: "Ornamentals", image: ornamentalsImg, category: "Ornamentals", name: "Leaf Spot", descriptionKey: "plants_d_leaf_spot_desc_orn", symptomsKey: "plants_d_leaf_spot_symptoms_orn", treatmentKey: "plants_d_leaf_spot_treatment_orn" },
+  { plant: "Ornamentals", image: ornamentalsImg, category: "Ornamentals", name: "Rust", descriptionKey: "plants_d_rust_desc", symptomsKey: "plants_d_rust_symptoms", treatmentKey: "plants_d_rust_treatment" },
+  { plant: "Ornamentals", image: ornamentalsImg, category: "Ornamentals", name: "Blight", descriptionKey: "plants_d_blight_desc", symptomsKey: "plants_d_blight_symptoms", treatmentKey: "plants_d_blight_treatment" },
+  { plant: "Ornamentals", image: ornamentalsImg, category: "Ornamentals", name: "Bacterial Leaf Spot", descriptionKey: "plants_d_bacterial_leaf_spot_desc", symptomsKey: "plants_d_bacterial_leaf_spot_symptoms", treatmentKey: "plants_d_bacterial_leaf_spot_treatment" },
 
   // FRUITING PLANTS
-  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Anthracnose", description: "Fungus that causes sunken spots on fruits, making them rot.", symptoms: "Dark sunken round spots on fruits. Pink-orange spore masses in spots. Fruit rots. Leaves drop in bad cases. Stems get spots.", treatment: "Spray mancozeb fungicide. Remove and destroy infected fruits. Change planting spot every 3 years. Use clean seeds. Spray copper to prevent. Pick fruits when ripe." },
-  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Leaf Curl", description: "Virus spread by tiny white insects that makes leaves curl and stop growing.", symptoms: "Leaves curl up or down. Leaves get thick and veins turn yellow. Plant stays small. Less fruit grows. Yellow mosaic patterns.", treatment: "Control whiteflies with yellow sticky traps and neem oil. Remove infected plants to stop spread. Use reflective mulch. Spray insecticidal soap. Plant resistant types. Remove weeds." },
-  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Citrus Canker", description: "Bacteria that cause raised corky bumps on leaves, stems, and fruits.", symptoms: "Raised corky bumps on leaves, stems, and fruits. Bumps have wet-looking edges and yellow rings. Leaves and fruit drop early. Twigs die back.", treatment: "Spray copper with copper hydroxide. Cut off and destroy infected branches. Protect plants from wind and rain splash. Don't work with wet plants. Use resistant types when available." },
-  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Scab", description: "Fungus that causes rough, corky patches on fruits and leaves.", symptoms: "Raised corky rough patches on fruits and leaves. Olive-green to dark brown scabby spots. Fruit grows weird shape. Leaf spots with fuzzy edges.", treatment: "Spray myclobutanil fungicide. Improve air flow. Don't water from above. Remove fallen leaves and fruits. Change planting spot. Spray protective fungicides when fruit is growing." },
-  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Powdery Mildew", description: "White powder fungus that covers leaves and young fruits.", symptoms: "White powder on leaves, stems, and young fruits. Leaves turn yellow and drop early. Fruit quality and size go down. Plant grows slow.", treatment: "Spray sulfur or potassium bicarbonate. Use horticultural oils. Improve air flow. Remove infected plant parts. Use strong fungicides for bad cases." },
-  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Leaf Spot", description: "Fungus that causes brown or black spots on leaves, making them fall off.", symptoms: "Round or odd-shaped spots that are brown to black. Some have rings like a target. Yellow rings around spots. Leaves turn brown and drop.", treatment: "Spray chlorothalonil or copper. Remove and destroy infected leaves. Water at base to keep leaves dry. Give plants enough space. Change planting spot every 2 years." },
+  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Anthracnose", descriptionKey: "plants_d_anthracnose_desc", symptomsKey: "plants_d_anthracnose_symptoms", treatmentKey: "plants_d_anthracnose_treatment" },
+  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Leaf Curl", descriptionKey: "plants_d_leaf_curl_desc", symptomsKey: "plants_d_leaf_curl_symptoms", treatmentKey: "plants_d_leaf_curl_treatment" },
+  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Citrus Canker", descriptionKey: "plants_d_citrus_canker_desc", symptomsKey: "plants_d_citrus_canker_symptoms", treatmentKey: "plants_d_citrus_canker_treatment" },
+  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Scab", descriptionKey: "plants_d_scab_desc", symptomsKey: "plants_d_scab_symptoms", treatmentKey: "plants_d_scab_treatment" },
+  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Powdery Mildew", descriptionKey: "plants_d_powdery_mildew_desc_fruit", symptomsKey: "plants_d_powdery_mildew_symptoms_fruit", treatmentKey: "plants_d_powdery_mildew_treatment_fruit" },
+  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Leaf Spot", descriptionKey: "plants_d_leaf_spot_desc_fruit", symptomsKey: "plants_d_leaf_spot_symptoms_fruit", treatmentKey: "plants_d_leaf_spot_treatment_fruit" },
 ];
 
 const PlantDiseases = () => {
+  const { t } = useLanguage();
   const [filterCategory, setFilterCategory] = useState("All");
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState(null);
@@ -39,7 +41,12 @@ const PlantDiseases = () => {
     return matchCategory && matchSearch;
   });
 
-  const categories = ["All", "Vegetables", "Ornamentals", "Fruiting Plants"];
+  const categories = [
+    "All", 
+    { value: "Vegetables", displayKey: "plants_cat_vegetables_display" }, 
+    { value: "Ornamentals", displayKey: "plants_cat_ornamentals_display" }, 
+    { value: "Fruiting Plants", displayKey: "plants_cat_fruits_display" }
+  ];
 
   const categoryColors = {
     Vegetables: { bg: '#e8f5e9', border: '#a5d6a7', label: '#2e7d32' },
@@ -53,6 +60,13 @@ const PlantDiseases = () => {
     "Fruiting Plants": fruitsImg,
   };
 
+  const getCategoryDisplay = (categoryValue) => {
+    if (categoryValue === "Vegetables") return t("plants_cat_vegetables_display");
+    if (categoryValue === "Ornamentals") return t("plants_cat_ornamentals_display");
+    if (categoryValue === "Fruiting Plants") return t("plants_cat_fruits_display");
+    return categoryValue;
+  };
+
   return (
     <div>
       {/* Header */}
@@ -60,16 +74,16 @@ const PlantDiseases = () => {
         <div style={styles.headerInner}>
           <div style={styles.titleRow}>
             <div style={styles.titleBar} />
-            <h1 style={styles.title}>Plant Disease Reference</h1>
+            <h1 style={styles.title}>{t("plants_title")}</h1>
           </div>
           <p style={styles.subtitle}>
-            A simple guide to help you spot and treat common plant diseases
+            {t("plants_subtitle")}
           </p>
           <div style={styles.headerStats}>
             {[
-              { value: diseases.length.toString(), label: 'Disease Entries' },
-              { value: categories.length - 1, label: 'Plant Categories' },
-              { value: '100%', label: 'Treatment Guidance' },
+              { value: diseases.length.toString(), label: t('plants_header_stat_diseases') },
+              { value: categories.length - 1, label: t('plants_header_stat_categories') },
+              { value: '100%', label: t('plants_header_stat_treatment') },
             ].map((s, i) => (
               <div key={i} style={styles.headerStat}>
                 <span style={styles.headerStatValue}>{s.value}</span>
@@ -86,14 +100,14 @@ const PlantDiseases = () => {
         {/* Controls */}
         <div style={styles.controls}>
           <div style={styles.filterGroup}>
-            <span style={styles.filterLabel}>Filter by category:</span>
+            <span style={styles.filterLabel}>{t("plants_filter_label")}</span>
             {categories.map((cat) => (
               <button
-                key={cat}
-                onClick={() => setFilterCategory(cat)}
-                style={{ ...styles.filterBtn, ...(filterCategory === cat ? styles.filterActive : {}) }}
+                key={typeof cat === 'object' ? cat.value : cat}
+                onClick={() => setFilterCategory(typeof cat === 'object' ? cat.value : cat)}
+                style={{ ...styles.filterBtn, ...(filterCategory === (typeof cat === 'object' ? cat.value : cat) ? styles.filterActive : {}) }}
               >
-                {cat}
+                {typeof cat === 'object' ? t(cat.displayKey) : t("plants_filter_all")}
               </button>
             ))}
           </div>
@@ -103,7 +117,7 @@ const PlantDiseases = () => {
             </svg>
             <input
               type="text"
-              placeholder="Search disease name..."
+              placeholder={t("plants_search_placeholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={styles.searchInput}
@@ -113,7 +127,7 @@ const PlantDiseases = () => {
 
         {/* Result count */}
         <p style={styles.resultCount}>
-          Showing <strong>{filtered.length}</strong> of {diseases.length} disease entries
+          {t("plants_result_count_prefix")} <strong>{filtered.length}</strong> {t("plants_result_count_middle")} {diseases.length} {t("plants_disease_entries")}
         </p>
 
         {/* Grid */}
@@ -127,10 +141,10 @@ const PlantDiseases = () => {
                 {/* Card Header */}
                 <div style={styles.cardTop}>
                   <div style={styles.cardTopLeft}>
-                    <img src={categoryImages[disease.category]} alt={disease.category} style={styles.plantImg} />
+                    <img src={categoryImages[disease.category]} alt={getCategoryDisplay(disease.category)} style={styles.plantImg} />
                     <div>
                       <span style={{ ...styles.categoryTag, background: colors.bg, color: colors.label, border: `1px solid ${colors.border}` }}>
-                        {disease.category}
+                        {getCategoryDisplay(disease.category)}
                       </span>
                       <h3 style={styles.diseaseName}>{disease.name}</h3>
                     </div>
@@ -139,13 +153,13 @@ const PlantDiseases = () => {
                     style={styles.expandBtn}
                     onClick={() => setExpanded(isOpen ? null : index)}
                   >
-                    {isOpen ? '▲ Less' : '▼ Details'}
+                    {isOpen ? t("plants_expand_less") : t("plants_expand_more")}
                   </button>
                 </div>
 
                 {/* Description always visible */}
                 <div style={styles.cardBody}>
-                  <p style={styles.description}>{disease.description}</p>
+                  <p style={styles.description}>{t(disease.descriptionKey)}</p>
                 </div>
 
                 {/* Expandable details */}
@@ -153,12 +167,12 @@ const PlantDiseases = () => {
                   <div style={styles.expandedBody}>
                     <div style={styles.infoRow}>
                       <div style={{ ...styles.infoBox, borderLeft: '3px solid #e53935' }}>
-                        <p style={styles.infoBoxLabel}>What you'll see:</p>
-                        <p style={styles.infoBoxText}>{disease.symptoms}</p>
+                        <p style={styles.infoBoxLabel}>{t("plants_info_symptoms")}</p>
+                        <p style={styles.infoBoxText}>{t(disease.symptomsKey)}</p>
                       </div>
                       <div style={{ ...styles.infoBox, borderLeft: '3px solid #2d6a2d' }}>
-                        <p style={styles.infoBoxLabel}>What to do:</p>
-                        <p style={styles.infoBoxText}>{disease.treatment}</p>
+                        <p style={styles.infoBoxLabel}>{t("plants_info_treatment")}</p>
+                        <p style={styles.infoBoxText}>{t(disease.treatmentKey)}</p>
                       </div>
                     </div>
                   </div>
@@ -170,7 +184,7 @@ const PlantDiseases = () => {
 
         {filtered.length === 0 && (
           <div style={styles.empty}>
-            <p style={styles.emptyText}>No diseases found matching your search.</p>
+            <p style={styles.emptyText}>{t("plants_empty_results")}</p>
           </div>
         )}
       </div>

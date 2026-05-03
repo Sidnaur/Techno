@@ -1,4 +1,7 @@
+import { useLanguage } from '../context/LanguageContext'; 
+
 const QuickTips = ({ onClose }) => {
+  const { t } = useLanguage();
   const tips = [
     {
       icon: "📷",

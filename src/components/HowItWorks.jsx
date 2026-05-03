@@ -1,33 +1,35 @@
 import { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 const HowItWorks = () => {
   const [activeStep, setActiveStep] = useState(null);
+  const { t } = useLanguage();
 
   const steps = [
     {
       number: "01",
       icon: "🌿",
-      title: "Upload Leaf Image",
-      description: "Simply take a photo of the affected leaf and upload it to our platform.",
-      detail: "Supports JPG, PNG up to 10MB. Works with tomato, chili, and eggplant leaves.",
+      title: t('hiw_step1_title'),
+      description: t('hiw_step1_desc'),
+      detail: t('hiw_step1_detail'),
       color: "#4caf50",
       lightColor: "rgba(76,175,80,0.1)",
     },
     {
       number: "02",
       icon: "🔍",
-      title: "AI Detection",
-      description: "Our deep learning model analyzes the leaf and identifies potential diseases.",
-      detail: "Powered by a model trained on 50,000+ plant disease images with 98% accuracy.",
+      title: t('hiw_step2_title'),
+      description: t('hiw_step2_desc'),
+      detail: t('hiw_step2_detail'),
       color: "#2d6a2d",
       lightColor: "rgba(45,106,45,0.1)",
     },
     {
       number: "03",
       icon: "🧑‍🌾",
-      title: "Get Treatment",
-      description: "Receive detailed disease info, causes, and treatment suggestions instantly.",
-      detail: "Includes organic and chemical treatment options with step-by-step guidance.",
+      title: t('hiw_step3_title'),
+      description: t('hiw_step3_desc'),
+      detail: t('hiw_step3_detail'),
       color: "#f5a623",
       lightColor: "rgba(245,166,35,0.1)",
     },
@@ -39,9 +41,11 @@ const HowItWorks = () => {
       <div style={styles.bgCircle2} />
 
       <div style={styles.header}>
-        <div style={styles.badge}>⚡ Simple Process</div>
-        <h2 style={styles.heading}>How It <span style={styles.headingAccent}>Works</span></h2>
-        <p style={styles.subheading}>Three simple steps to protect your crops from disease</p>
+        <div style={styles.badge}>⚡ {t('hiw_badge')}</div>
+        <h2 style={styles.heading}>
+          {t('hiw_heading')} <span style={styles.headingAccent}>{t('hiw_heading_accent')}</span>
+        </h2>
+        <p style={styles.subheading}>{t('hiw_subheading')}</p>
       </div>
 
       <div style={styles.stepsContainer}>
@@ -88,6 +92,7 @@ const HowItWorks = () => {
   );
 };
 
+// styles — completely unchanged
 const styles = {
   section: {
     background: 'white',

@@ -2,13 +2,13 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import logoImg from "../assets/agri.png";
 import QuickTips from "./QuickTips";
+import { useLanguage } from "../context/LanguageContext"; // ✅ missing import added
 
 const Navbar = () => {
   const [showQuickTips, setShowQuickTips] = useState(false);
+  const { t } = useLanguage(); // ✅ already there, now works with the import
 
-  const handleQuickTips = () => {
-    setShowQuickTips(true);
-  };
+  const handleQuickTips = () => setShowQuickTips(true);
 
   return (
     <>
@@ -20,11 +20,11 @@ const Navbar = () => {
 
         <ul style={styles.links}>
           {[
-            { to: "/", label: "Home" },
-            { to: "/about", label: "About" },
-            { to: "/detect", label: "Detect Disease" },
-            { to: "/diseases", label: "Plant Diseases" },
-            { to: "/blog", label: "Blog" },
+            { to: "/", label: t('nav_home') },
+            { to: "/about", label: t('nav_about') },
+            { to: "/detect", label: t('nav_detect') },
+            { to: "/diseases", label: t('nav_plants') },
+            { to: "/blog", label: t('nav_blog') },
           ].map(({ to, label }) => (
             <li key={to}>
               <NavLink
@@ -45,7 +45,7 @@ const Navbar = () => {
         </ul>
 
         <button style={styles.btn} onClick={handleQuickTips}>
-           Quick Tips
+          {t('nav_tips')}
         </button>
       </nav>
 

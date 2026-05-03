@@ -1,35 +1,55 @@
 import { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import vegetablesImg from '../assets/Vegetables.jpg';
 import ornamentalsImg from '../assets/Ornamentals.jpg';
 import fruitsImg from '../assets/Fruits.jpg';
 
 const SupportedPlants = () => {
   const [activeCard, setActiveCard] = useState(null);
+  const { t } = useLanguage();
 
   const plants = [
     {
       image: vegetablesImg,
-      name: "Vegetables",
-      scientific: "e.g. Tomato, Eggplant, Cabbage, Carrot",
-      diseases: ["Leaf Spot", "Early Blight", "Late Blight", "Powdery Mildew", "Bacterial Spot"],
+      name: t('plants_cat_vegetables'),
+      scientific: t('plants_cat_vegetables_examples'),
+      diseases: [
+        t('plants_d_leaf_spot'),
+        t('plants_d_early_blight'),
+        t('plants_d_late_blight'),
+        t('plants_d_powdery_mildew'),
+        t('plants_d_bacterial_spot'),
+      ],
       count: 5,
-      fact: "Vegetable crops are highly vulnerable to fungal and bacterial diseases, especially in humid environments.",
+      fact: t('plants_fact_vegetables'),
     },
     {
       image: ornamentalsImg,
-      name: "Ornamentals",
-      scientific: "e.g. Rose, Orchid, Hibiscus, Bougainvillea",
-      diseases: ["Powdery Mildew", "Leaf Spot", "Rust", "Blight", "Bacterial Leaf Spot"],
+      name: t('plants_cat_ornamentals'),
+      scientific: t('plants_cat_ornamentals_examples'),
+      diseases: [
+        t('plants_d_powdery_mildew'),
+        t('plants_d_leaf_spot'),
+        t('plants_d_rust'),
+        t('plants_d_blight'),
+        t('plants_d_bacterial_leaf_spot'),
+      ],
       count: 5,
-      fact: "Ornamental plants often suffer from leaf diseases due to frequent watering and close planting conditions.",
+      fact: t('plants_fact_ornamentals'),
     },
     {
       image: fruitsImg,
-      name: "Fruit-Bearing Plants",
-      scientific: "e.g. Mango, Banana, Papaya, Citrus",
-      diseases: ["Anthracnose", "Leaf Curl", "Citrus Canker", "Scab", "Powdery Mildew"],
+      name: t('plants_cat_fruits'),
+      scientific: t('plants_cat_fruits_examples'),
+      diseases: [
+        t('plants_d_anthracnose'),
+        t('plants_d_leaf_curl'),
+        t('plants_d_citrus_canker'),
+        t('plants_d_scab'),
+        t('plants_d_powdery_mildew'),
+      ],
       count: 5,
-      fact: "Fruit-bearing plants are prone to diseases that affect leaves, impacting yield, which can reduce photosynthesis."
+      fact: t('plants_fact_fruits'),
     },
   ];
 
@@ -38,17 +58,14 @@ const SupportedPlants = () => {
       <div style={styles.header}>
         <div style={styles.titleRow}>
           <div style={styles.titleBar} />
-          <h2 style={styles.heading}>Supported Crops (Expanding)</h2>
+          <h2 style={styles.heading}>{t('plants_title')}</h2>
           <div style={styles.titleBar} />
         </div>
 
-        <p style={styles.subheading}>
-          The AgriVision AI system detects plant diseases across selected crop categories using leaf images.
-          You may upload any plant leaf, but detection is most accurate for the crops listed below.
-        </p>
+        <p style={styles.subheading}>{t('plants_subheading')}</p>
 
         <p style={{ ...styles.subheading, marginTop: '10px', fontSize: '0.9rem', color: '#666' }}>
-          *General detection is supported, but results may vary for unsupported crops.
+          {t('plants_disclaimer')}
         </p>
       </div>
 
@@ -76,7 +93,7 @@ const SupportedPlants = () => {
               </div>
 
               <div style={styles.countBadge}>
-                {plant.count} Common Conditions
+                {plant.count} {t('plants_conditions_badge')}
               </div>
             </div>
 
@@ -85,7 +102,7 @@ const SupportedPlants = () => {
                 <p style={styles.factText}>{plant.fact}</p>
               </div>
 
-              <p style={styles.diseasesLabel}>Common Detectable Conditions</p>
+              <p style={styles.diseasesLabel}>{t('plants_conditions')}</p>
 
               <ul style={styles.diseaseList}>
                 {plant.diseases.map((disease, i) => (
@@ -99,6 +116,16 @@ const SupportedPlants = () => {
           </div>
         ))}
       </div>
+
+      {/* ✅ Advisory note added below the cards */}
+      <div style={styles.advisoryBox}>
+        <div style={styles.advisoryIcon}>🌾</div>
+        <p style={styles.advisoryText}>
+          <strong style={styles.advisoryStrong}>{t('plants_advisory_label')} </strong>
+          {t('plants_advisory_text')}
+        </p>
+      </div>
+
     </section>
   );
 };
@@ -165,22 +192,13 @@ const styles = {
     height: '200px',
     overflow: 'hidden',
   },
-  image: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-  },
+  image: { width: '100%', height: '100%', objectFit: 'cover' },
   imageOverlay: {
     position: 'absolute',
     inset: 0,
     background: 'linear-gradient(to top, rgba(10,30,10,0.75) 0%, rgba(0,0,0,0.1) 60%)',
   },
-  imageLabel: {
-    position: 'absolute',
-    bottom: '14px',
-    left: '16px',
-    zIndex: 2,
-  },
+  imageLabel: { position: 'absolute', bottom: '14px', left: '16px', zIndex: 2 },
   plantName: {
     fontSize: '1.3rem',
     fontWeight: '700',
@@ -188,12 +206,7 @@ const styles = {
     margin: '0 0 2px',
     textShadow: '0 1px 4px rgba(0,0,0,0.4)',
   },
-  scientific: {
-    fontSize: '0.78rem',
-    color: 'rgba(255,255,255,0.75)',
-    fontStyle: 'italic',
-    margin: 0,
-  },
+  scientific: { fontSize: '0.78rem', color: 'rgba(255,255,255,0.75)', fontStyle: 'italic', margin: 0 },
   countBadge: {
     position: 'absolute',
     top: '12px',
@@ -217,12 +230,7 @@ const styles = {
     padding: '10px 14px',
     marginBottom: '16px',
   },
-  factText: {
-    fontSize: '0.85rem',
-    color: '#444',
-    lineHeight: '1.6',
-    margin: 0,
-  },
+  factText: { fontSize: '0.85rem', color: '#444', lineHeight: '1.6', margin: 0 },
   diseasesLabel: {
     fontSize: '0.72rem',
     fontWeight: '700',
@@ -231,26 +239,38 @@ const styles = {
     letterSpacing: '0.8px',
     marginBottom: '10px',
   },
-  diseaseList: {
-    listStyle: 'none',
-    padding: 0,
+  diseaseList: { listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '6px' },
+  diseaseItem: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.88rem', color: '#333', fontWeight: '500' },
+  bullet: { color: '#2d6a2d', fontWeight: '900', fontSize: '1rem' },
+
+  // ✅ Advisory note styles
+  advisoryBox: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '14px',
+    maxWidth: '1100px',
+    margin: '0 auto',
+    background: 'white',
+    border: '1px solid #c8e6c9',
+    borderLeft: '5px solid #2d6a2d',
+    borderRadius: '10px',
+    padding: '18px 24px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+  },
+  advisoryIcon: {
+    fontSize: '1.4rem',
+    flexShrink: 0,
+    marginTop: '1px',
+  },
+  advisoryText: {
+    fontSize: '0.9rem',
+    color: '#444',
+    lineHeight: '1.7',
     margin: 0,
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '6px',
   },
-  diseaseItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    fontSize: '0.88rem',
-    color: '#333',
-    fontWeight: '500',
-  },
-  bullet: {
-    color: '#2d6a2d',
-    fontWeight: '900',
-    fontSize: '1rem',
+  advisoryStrong: {
+    color: '#1a3d1a',
+    fontWeight: '700',
   },
 };
 

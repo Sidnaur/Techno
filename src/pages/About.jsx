@@ -1,6 +1,9 @@
 import aboutImg from '../assets/about.jpg';
+import { useLanguage } from '../context/LanguageContext';
 
 const About = () => {
+  const { t } = useLanguage();
+
   return (
     <div>
       {/* Header */}
@@ -8,10 +11,10 @@ const About = () => {
         <div style={styles.headerInner}>
           <div style={styles.titleRow}>
             <div style={styles.titleBar} />
-            <h1 style={styles.title}>About AgriVision</h1>
+            <h1 style={styles.title}>{t('about_title')}</h1>
           </div>
           <p style={styles.subtitle}>
-            Smart farming solutions powered by artificial intelligence — built for farmers, by problem solvers.
+            {t('about_subtitle')}
           </p>
         </div>
       </div>
@@ -19,22 +22,20 @@ const About = () => {
       {/* AI Section */}
       <div style={styles.aiSection}>
         <div style={styles.aiText}>
-          <p style={styles.sectionLabel}>Our Technology</p>
-          <h2 style={styles.aiTitle}>AI for Healthier Crops</h2>
+          <p style={styles.sectionLabel}>{t('about_tech_label')}</p>
+          <h2 style={styles.aiTitle}>{t('about_tech_title')}</h2>
           <div style={styles.divider} />
           <p style={styles.aiPara}>
-            AgriVision is a plant disease detection system that uses deep learning to identify diseases in crop leaves. Simply upload a photograph of an affected leaf, and our AI will analyze it within seconds.
+            {t('about_tech_para1')}
           </p>
           <p style={styles.aiPara}>
-            Our system is designed with simplicity in mind — no technical expertise required.
-            Whether you're a farmer in the field or a gardener at home, AgriVision helps you
-            diagnose problems early and take action before crop damage escalates.
+            {t('about_tech_para2')}
           </p>
         </div>
         <div style={styles.aiImageBox}>
           <img src={aboutImg} alt="AI Detection" style={styles.aiImage} />
           <div style={styles.imageCaption}>
-            AgriVision AI analyzing leaf conditions to provide instant disease detection and treatment recommendations.
+            {t('about_img_caption')}
           </div>
         </div>
       </div>
@@ -42,27 +43,27 @@ const About = () => {
       {/* Cards Section */}
       <div style={styles.cardsSection}>
         <div style={styles.cardsSectionHeader}>
-          <p style={styles.sectionLabel}>Our Purpose</p>
-          <h2 style={styles.cardsSectionTitle}>What Drives Us</h2>
+          <p style={styles.sectionLabel}>{t('about_purpose_label')}</p>
+          <h2 style={styles.cardsSectionTitle}>{t('about_purpose_title')}</h2>
         </div>
         <div style={styles.cardsGrid}>
           {[
             {
               num: '01',
-              title: "Our Mission",
-              text: "To empower small-scale farmers and home gardeners with accessible AI technology for early plant disease detection, reducing crop losses and promoting sustainable agriculture.",
+              title: t('about_mission_title'),
+              text: t('about_mission_text'),
               accent: '#2d6a2d',
             },
             {
               num: '02',
-              title: "Our Vision",
-              text: "A world where every farmer, regardless of scale, has access to advanced diagnostic tools that help protect their crops and improve food security for communities.",
+              title: t('about_vision_title'),
+              text: t('about_vision_text'),
               accent: '#f5a623',
             },
             {
               num: '03',
-              title: "Who We Serve",
-              text: "Small-scale farmers, home gardeners, agricultural students, and extension workers who need a simple, reliable tool to identify plant diseases quickly and accurately.",
+              title: t('about_serve_title'),
+              text: t('about_serve_text'),
               accent: '#1a3d1a',
             },
           ].map((card, index) => (
@@ -83,8 +84,7 @@ const About = () => {
         <div style={styles.noteInner}>
           <div style={styles.noteLine} />
           <p style={styles.noteText}>
-            AgriVision is developed as an academic and practical tool to support agricultural communities.
-            For critical crop decisions, always consult a licensed agricultural extension officer or agronomist.
+            {t('about_note')}
           </p>
           <div style={styles.noteLine} />
         </div>
