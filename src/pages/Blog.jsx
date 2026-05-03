@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import tomatoImg from '../assets/TOMATO LEAF Fragrance Oil Choose Your Size - Etsy.jpg';
 import chiliImg from '../assets/chilly.jpg';
 import eggplantImg from '../assets/African Eggplant, Nya Nya Chungu (Solanum aethiopicum) - Medium Coconut Coir Pot.jpg';
@@ -64,6 +65,7 @@ const posts = [
 ];
 
 const Blog = () => {
+  const { t } = useLanguage();
   const [activePost, setActivePost] = useState(null);
   const [activeCategory, setActiveCategory] = useState('All');
 
@@ -80,7 +82,7 @@ const Blog = () => {
         <div style={styles.header}>
           <div style={styles.headerInner}>
             <button onClick={() => setActivePost(null)} style={styles.backBtn}>
-              ← Back to Blog
+              {t('blog_back')}
             </button>
             <div style={styles.titleRow}>
               <div style={styles.titleBar} />
@@ -118,17 +120,15 @@ const Blog = () => {
 
             {/* Citation */}
             <div style={styles.citationBox}>
-              <p style={styles.citationLabel}>Source & References</p>
+              <p style={styles.citationLabel}>{t('blog_source_label')}</p>
               <p style={styles.citationText}>
                 {post.source}.{' '}
                 <a href={post.sourceUrl} target="_blank" rel="noreferrer" style={styles.citationLink}>
-                  View Publication →
+                  {t('blog_view_publication')}
                 </a>
               </p>
               <p style={styles.citationDisclaimer}>
-                This article is based on verified, open-access research from Scopus-indexed, peer-reviewed journals.
-                The information is intended for educational purposes. For field-specific guidance, consult your local
-                agricultural extension officer.
+                {t('blog_disclaimer')}
               </p>
             </div>
           </div>
@@ -144,11 +144,10 @@ const Blog = () => {
         <div style={styles.headerInner}>
           <div style={styles.titleRow}>
             <div style={styles.titleBar} />
-            <h1 style={styles.title}>Agricultural Blog</h1>
+            <h1 style={styles.title}>{t('blog_title')}</h1>
           </div>
           <p style={styles.subtitle}>
-            Evidence-based insights on plant health, disease management, and sustainable farming —
-            sourced from Scopus-indexed, peer-reviewed research.
+            {t('blog_subtitle')}
           </p>
         </div>
       </div>
@@ -158,7 +157,7 @@ const Blog = () => {
 
         {/* Filter */}
         <div style={styles.filterRow}>
-          <span style={styles.filterLabel}>Browse by topic:</span>
+          <span style={styles.filterLabel}>{t('blog_filter_label')}</span>
           <div style={styles.filterGroup}>
             {categories.map(c => (
               <button
@@ -166,7 +165,7 @@ const Blog = () => {
                 onClick={() => setActiveCategory(c)}
                 style={{ ...styles.filterBtn, ...(activeCategory === c ? styles.filterActive : {}) }}
               >
-                {c}
+                {c === 'All' ? t('blog_filter_all') : c}
               </button>
             ))}
           </div>
@@ -206,13 +205,13 @@ const Blog = () => {
                       <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
                       <polyline points="14 2 14 8 20 8"/>
                     </svg>
-                    <span style={styles.sourceTagText}>Scopus-Indexed</span>
+                    <span style={styles.sourceTagText}>{t('blog_scopus_indexed')}</span>
                   </div>
                   <button
                     style={styles.readMoreBtn}
                     onClick={() => setActivePost(post.id)}
                   >
-                    Read Article →
+                    {t('blog_read_article')}
                   </button>
                 </div>
               </div>
@@ -223,9 +222,7 @@ const Blog = () => {
         {/* Disclaimer */}
         <div style={styles.disclaimer}>
           <p style={styles.disclaimerText}>
-            All articles on AgriVision Blog are based on verified, open-access research from Scopus-indexed,
-            peer-reviewed journals. Content is summarized for educational purposes and should not replace
-            professional agronomic consultation.
+            {t('blog_disclaimer')}
           </p>
         </div>
       </div>

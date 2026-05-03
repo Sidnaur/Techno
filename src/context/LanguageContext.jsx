@@ -82,12 +82,12 @@ const translations = {
     // Categories (Keep in English for internal use, translated for display)
     plants_cat_vegetables: "Vegetables",
     plants_cat_ornamentals: "Ornamentals",
-    plants_cat_fruits: "Fruiting Plants",
+    plants_cat_fruits: "Fruit-Bearing Plants",
     
     // Category display for buttons (translated)
     plants_cat_vegetables_display: "Vegetables",
     plants_cat_ornamentals_display: "Ornamentals",
-    plants_cat_fruits_display: "Fruiting Plants",
+    plants_cat_fruits_display: "Fruit-Bearing Plants",
     
     // Example texts for Supported Plants dropdown (added fix)
     plants_cat_vegetables_examples: "e.g. Tomato, Eggplant, Cabbage, Carrot",
@@ -98,7 +98,21 @@ const translations = {
     plants_fact_vegetables: "Vegetable crops are highly vulnerable to fungal and bacterial diseases, especially in humid environments.",
     plants_fact_ornamentals: "Ornamental plants often suffer from leaf diseases due to frequent watering and close planting conditions.",
     plants_fact_fruits: "Fruit-bearing plants are prone to diseases that affect leaves, impacting yield, which can reduce photosynthesis.",
-    
+
+    plants_d_leaf_spot: "Leaf Spot",
+    plants_d_early_blight: "Early Blight",
+    plants_d_late_blight: "Late Blight",
+    plants_d_powdery_mildew: "Powdery Mildew",
+    plants_d_downy_mildew: "Downy Mildew",
+    plants_d_bacterial_spot: "Bacterial Spot",
+    plants_d_bacterial_leaf_spot: "Bacterial Leaf Spot",
+    plants_d_rust: "Rust",
+    plants_d_blight: "Blight",
+    plants_d_anthracnose: "Anthracnose",
+    plants_d_leaf_curl: "Leaf Curl",
+    plants_d_citrus_canker: "Citrus Canker",
+    plants_d_scab: "Scab",
+
     // Disease Descriptions, Symptoms, Treatments - VEGETABLES
     plants_d_leaf_spot_desc: "A fungus that attacks leaves, causing spots that can kill the leaf.",
     plants_d_leaf_spot_symptoms: "Small brown or black circles on leaves. Often have yellow edges. Spots can grow together and make leaves die.",
@@ -204,6 +218,16 @@ const translations = {
     quicktips_tip4_title: "Read Plant Care Blogs",
     quicktips_tip4_desc: "Discover useful farming tips and plant care advice from our blog.",
     quicktips_close: "Close",
+    blog_back: "← Back to Blog",
+    blog_title: "Agricultural Blog",
+    blog_subtitle: "Evidence-based insights on plant health, disease management, and sustainable farming — sourced from Scopus-indexed, peer-reviewed research.",
+    blog_filter_label: "Browse by topic:",
+    blog_filter_all: "All",
+    blog_read_article: "Read Article →",
+    blog_source_label: "Source & References",
+    blog_view_publication: "View Publication →",
+    blog_disclaimer: "All articles on AgriVision Blog are based on verified, open-access research from Scopus-indexed, peer-reviewed journals. Content is summarized for educational purposes and should not replace professional agronomic consultation.",
+    blog_scopus_indexed: "Scopus-Indexed",
 
     // Footer
     footer_rights: "All rights reserved.",
@@ -259,7 +283,7 @@ const translations = {
 
   ceb: {
     // Navbar
-    nav_home: "Panimalay",
+    nav_home: "Sugod",
     nav_detect: "Tukuya ang Sakit",
     nav_plants: "Gisuportahan nga Tanom",
     nav_tips: "Mga Tip",
@@ -271,10 +295,10 @@ const translations = {
     hero_title_line1: "Detect Plant",
     hero_title_accent: "Diseases",
     hero_title_line2: "Instantly",
-    hero_subtitle: "Upload a photo of any plant leaf and receive instant AI-powered disease detection with recommended treatments.",
-    hero_cta: "Start Detection",
-    hero_learn: "Learn More",
-    hero_scroll: "Scroll to explore",
+    hero_subtitle: "Mag-upload og hulagway sa bisan unsang dahon sa tanom ug makadawat og dali nga AI-powered nga pag-ila sa sakit uban sa girekomendang mga tambal.",
+    hero_cta: "Sugdi ang Pag-ila",
+    hero_learn: "Pagkat-on Pa",
+    hero_scroll: "I-scroll aron masuta",
 
     // Detect page
     detect_title: "Pag-ila sa Sakit sa Tanom",
@@ -353,7 +377,21 @@ const translations = {
     plants_fact_vegetables: "Ang mga gulay dali nga mataptan sa fungal ug bacterial nga mga sakit, labi na sa maalingasa nga kalikopan.",
     plants_fact_ornamentals: "Ang mga ornamental nga tanom sagad magasakit sa dahon tungod sa kanunay nga pagdilig ug suod nga pagpugas.",
     plants_fact_fruits: "Ang mga tanom nga may prutas dali mataptan sa mga sakit nga nakaapekto sa mga dahon, nga makapakunhod sa ani.",
-    
+
+    plants_d_leaf_spot: "Leaf Spot",
+    plants_d_early_blight: "Early Blight",
+    plants_d_late_blight: "Late Blight",
+    plants_d_powdery_mildew: "Powdery Mildew",
+    plants_d_downy_mildew: "Downy Mildew",
+    plants_d_bacterial_spot: "Bacterial Spot",
+    plants_d_bacterial_leaf_spot: "Bacterial Leaf Spot",
+    plants_d_rust: "Rust",
+    plants_d_blight: "Blight",
+    plants_d_anthracnose: "Anthracnose",
+    plants_d_leaf_curl: "Leaf Curl",
+    plants_d_citrus_canker: "Citrus Canker",
+    plants_d_scab: "Scab",
+
     // Disease Descriptions, Symptoms, Treatments - VEGETABLES (Translated to Cebuano)
     plants_d_leaf_spot_desc: "Usa ka fungus nga moatake sa mga dahon, hinungdan sa mga mantsa nga makapatay sa dahon.",
     plants_d_leaf_spot_symptoms: "Gagmay nga brown o itom nga lingin sa mga dahon. Kasagaran adunay yellow nga ngilit. Ang mga mantsa mahimong magdungan ug makapatay sa dahon.",
@@ -428,6 +466,27 @@ const translations = {
     // Quick Tips
     tips_title: "Mga Mabilis nga Tip",
     tips_subtitle: "Mas maayo nga resulta pinaagi niining mga tip sa pagkuha og litrato.",
+    quicktips_title: "🌿 Dali nga Giya sa Pag-atiman sa Tanom",
+    quicktips_subtitle: "Makatabang nga mga tip aron mapabiling himsog ang imong mga tanom ug mapalambo ang AI detection.",
+    quicktips_tip1_title: "Kuhaa ang Klarong mga Litrato",
+    quicktips_tip1_desc: "Kuhaa ang klaro ug hayag nga mga litrato sa dahon aron mas mopasibo ang tukma nga pag-ila.",
+    quicktips_tip2_title: "Gamiton ang Detect Disease",
+    quicktips_tip2_desc: "I-upload ang dahon sa imong tanom sa among AI system aron dali matasa ang posibleng sakit.",
+    quicktips_tip3_title: "Kat-oni ang mga Sakit",
+    quicktips_tip3_desc: "Susiha ang among library sa sakit sa tanom aron masabtan ang mga sintomas ug pagtambal.",
+    quicktips_tip4_title: "Basaha ang mga Blog sa Pag-atiman sa Tanom",
+    quicktips_tip4_desc: "Pangitaa ang mga mapuslanong tip sa pag-uma ug tambag sa pag-atiman sa tanom gikan sa among blog.",
+    quicktips_close: "Isara",
+    blog_back: "← Balik sa Blog",
+    blog_title: "Agrikulturang Blog",
+    blog_subtitle: "Mga kasayuran nga nakabase sa ebidensya bahin sa kahimsog sa tanom, pagdumala sa sakit, ug malungtarong pag-uma — gikan sa Scopus-indexed, peer-reviewed nga pagtuon.",
+    blog_filter_label: "Tan-awa pinaagi sa topiko:",
+    blog_filter_all: "Tanan",
+    blog_read_article: "Basaha ang Artikulo →",
+    blog_source_label: "Tinubdan ug mga Referensya",
+    blog_view_publication: "Tan-awa ang Publikasyon →",
+    blog_disclaimer: "Ang tanan nga artikulo sa AgriVision Blog gibase sa napamatud-an, open-access nga pagtuon gikan sa Scopus-indexed, peer-reviewed nga mga journal. Ang sulod gisumada alang sa edukasyonal nga katuyoan ug dili angay ilisan ang propesyonal nga agronomikong konsultasyon.",
+    blog_scopus_indexed: "Scopus-Indexed",
 
     // About page
     about_title: "Mahitungod sa AgriVision",
@@ -501,7 +560,7 @@ const translations = {
 
   tl: {
     // Navbar
-    nav_home: "Tahanan",
+    nav_home: "Simula",
     nav_detect: "Tukuyin ang Sakit",
     nav_plants: "Mga Sinusuportahang Pananim",
     nav_tips: "Mabilis na Tips",
@@ -513,10 +572,10 @@ const translations = {
     hero_title_line1: "Detect Plant",
     hero_title_accent: "Diseases",
     hero_title_line2: "Instantly",
-    hero_subtitle: "Upload a photo of any plant leaf and receive instant AI-powered disease detection with recommended treatments.",
-    hero_cta: "Start Detection",
-    hero_learn: "Learn More",
-    hero_scroll: "Scroll to explore",
+    hero_subtitle: "Mag-upload ng larawan ng anumang dahon ng halaman at makatanggap ng agarang AI-powered na pagtukoy ng sakit kasama ang mga inirerekomendang lunas.",
+    hero_cta: "Simulan ang Pagtukoy",
+    hero_learn: "Matuto Pa",
+    hero_scroll: "Mag-scroll para tuklasin",
 
     // Detect page
     detect_title: "Pagtukoy ng Sakit ng Halaman",
@@ -595,7 +654,21 @@ const translations = {
     plants_fact_vegetables: "Ang mga gulay ay lubhang mahina sa fungal at bacterial na mga sakit, lalo na sa mahalumigmig na kapaligiran.",
     plants_fact_ornamentals: "Ang mga ornamental na halaman ay madalas na nagkakaroon ng sakit sa dahon dahil sa madalas na pagdidilig at siksikang pagtatanim.",
     plants_fact_fruits: "Ang mga halamang may bunga ay madaling kapitan ng mga sakit na nakakaapekto sa mga dahon, na nagbabawas ng ani.",
-    
+
+    plants_d_leaf_spot: "Leaf Spot",
+    plants_d_early_blight: "Early Blight",
+    plants_d_late_blight: "Late Blight",
+    plants_d_powdery_mildew: "Powdery Mildew",
+    plants_d_downy_mildew: "Downy Mildew",
+    plants_d_bacterial_spot: "Bacterial Spot",
+    plants_d_bacterial_leaf_spot: "Bacterial Leaf Spot",
+    plants_d_rust: "Rust",
+    plants_d_blight: "Blight",
+    plants_d_anthracnose: "Anthracnose",
+    plants_d_leaf_curl: "Leaf Curl",
+    plants_d_citrus_canker: "Citrus Canker",
+    plants_d_scab: "Scab",
+
     // Disease Descriptions, Symptoms, Treatments - VEGETABLES (Translated to Tagalog)
     plants_d_leaf_spot_desc: "Isang fungus na sumasalakay sa mga dahon, nagdudulot ng mga mantsa na maaaring pumatay ng dahon.",
     plants_d_leaf_spot_symptoms: "Maliliit na kayumanggi o itim na bilog sa mga dahon. Madalas ay may dilaw na gilid. Ang mga mantsa ay maaaring magsama-sama at mamatay ang mga dahon.",
@@ -701,6 +774,16 @@ const translations = {
     quicktips_tip4_title: "Basahin ang mga Blog sa Pag-aalaga ng Halaman",
     quicktips_tip4_desc: "Tuklasin ang mga kapaki-pakinabang na tip sa pagsasaka at payo sa pag-aalaga ng halaman mula sa aming blog.",
     quicktips_close: "Isara",
+    blog_back: "← Bumalik sa Blog",
+    blog_title: "Agricultural Blog",
+    blog_subtitle: "Mga batay sa ebidensya na pananaw tungkol sa kalusugan ng halaman, pamamahala ng sakit, at napapanatiling pagsasaka — nagmula sa Scopus-indexed, peer-reviewed na pananaliksik.",
+    blog_filter_label: "Mag-browse ayon sa paksa:",
+    blog_filter_all: "Lahat",
+    blog_read_article: "Basahin ang Artikulo →",
+    blog_source_label: "Pinagmulan at Sanggunian",
+    blog_view_publication: "Tingnan ang Publikasyon →",
+    blog_disclaimer: "Lahat ng artikulo sa AgriVision Blog ay nakabatay sa nasuring pananaliksik mula sa Scopus-indexed, peer-reviewed na mga journal. Ang nilalaman ay pinaikling para sa layuning edukasyonal at hindi dapat pumalit sa propesyonal na agronomic na konsultasyon.",
+    blog_scopus_indexed: "Scopus-Indexed",
 
     // Footer
     footer_rights: "Lahat ng karapatan ay nakalaan.",

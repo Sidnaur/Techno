@@ -11,7 +11,7 @@ const SupportedPlants = () => {
   const plants = [
     {
       image: vegetablesImg,
-      name: t('plants_cat_vegetables'),
+      name: t('plants_cat_vegetables_display'),
       scientific: t('plants_cat_vegetables_examples'),
       diseases: [
         t('plants_d_leaf_spot'),
@@ -25,7 +25,7 @@ const SupportedPlants = () => {
     },
     {
       image: ornamentalsImg,
-      name: t('plants_cat_ornamentals'),
+      name: t('plants_cat_ornamentals_display'),
       scientific: t('plants_cat_ornamentals_examples'),
       diseases: [
         t('plants_d_powdery_mildew'),
@@ -39,7 +39,7 @@ const SupportedPlants = () => {
     },
     {
       image: fruitsImg,
-      name: t('plants_cat_fruits'),
+      name: t('plants_cat_fruits_display'),
       scientific: t('plants_cat_fruits_examples'),
       diseases: [
         t('plants_d_anthracnose'),

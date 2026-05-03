@@ -12,6 +12,48 @@ const DetectDisease = () => {
   const [error, setError] = useState(null);
   const { t } = useLanguage(); 
 
+  const diseaseTranslationMap = {
+    'septoria leaf spot': 'plants_d_leaf_spot',
+    'leaf spot': 'plants_d_leaf_spot',
+    'early blight': 'plants_d_early_blight',
+    'late blight': 'plants_d_late_blight',
+    'powdery mildew': 'plants_d_powdery_mildew',
+    'downy mildew': 'plants_d_downy_mildew',
+    'bacterial spot': 'plants_d_bacterial_spot',
+    'bacterial leaf spot': 'plants_d_bacterial_leaf_spot',
+    'rust': 'plants_d_rust',
+    'blight': 'plants_d_blight',
+    'anthracnose': 'plants_d_anthracnose',
+    'leaf curl': 'plants_d_leaf_curl',
+    'citrus canker': 'plants_d_citrus_canker',
+    'scab': 'plants_d_scab',
+  };
+
+  const getDiseaseKey = (diseaseName) => {
+    if (!diseaseName) return null;
+    const normalized = diseaseName.toLowerCase().trim();
+    return (
+      diseaseTranslationMap[normalized] ||
+      Object.entries(diseaseTranslationMap).find(([phrase]) => normalized.includes(phrase))?.[1] ||
+      null
+    );
+  };
+
+  const translateDiseaseField = (field, fallback) => {
+    const diseaseName = result?.disease_name || result?.disease || '';
+    const baseKey = getDiseaseKey(diseaseName);
+    if (!baseKey) return fallback;
+    const translationKey = `${baseKey}_${field}`;
+    const translated = t(translationKey);
+    if (translated !== translationKey) return translated;
+    if (field === 'prevention') {
+      const treatmentKey = `${baseKey}_treatment`;
+      const translatedTreatment = t(treatmentKey);
+      if (translatedTreatment !== treatmentKey) return translatedTreatment;
+    }
+    return fallback;
+  };
+
   // Camera states
   const [cameraOpen, setCameraOpen] = useState(false);
   const [cameraError, setCameraError] = useState(null);
@@ -353,13 +395,13 @@ const DetectDisease = () => {
                 </div>
                 <div style={styles.resultRow}>
                   <span style={styles.resultKey}>{t('detect_symptoms')}</span>
-                  <span style={styles.resultValue}>{result.symptoms_observed || result.symptoms || 'N/A'}</span>
+                  <span style={styles.resultValue}>{translateDiseaseField('symptoms', result.symptoms_observed || result.symptoms || 'N/A')}</span>
                 </div>
                 <div style={styles.resultDivider} />
                 <p style={styles.resultKey}>{t('detect_treatment')}</p>
-                <p style={styles.resultTreatment}>{result.recommended_treatment || result.treatment || 'N/A'}</p>
+                <p style={styles.resultTreatment}>{translateDiseaseField('treatment', result.recommended_treatment || result.treatment || 'N/A')}</p>
                 <p style={styles.resultKey}>{t('detect_prevention')}</p>
-                <p style={styles.resultTreatment}>{result.preventive_measures || result.prevention || 'N/A'}</p>
+                <p style={styles.resultTreatment}>{translateDiseaseField('prevention', result.preventive_measures || result.prevention || result.recommended_treatment || 'N/A')}</p>
               </div>
             )}
           </div>

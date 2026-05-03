@@ -5,23 +5,23 @@ const QuickTips = ({ onClose }) => {
   const tips = [
     {
       icon: "📷",
-      title: "Take Clear Photos",
-      desc: "Capture clear, well-lit photos of the plant leaf to improve detection accuracy.",
+      title: t('quicktips_tip1_title'),
+      desc: t('quicktips_tip1_desc'),
     },
     {
       icon: "🔍",
-      title: "Use Detect Disease",
-      desc: "Upload your plant leaf to our AI system to instantly analyze possible diseases.",
+      title: t('quicktips_tip2_title'),
+      desc: t('quicktips_tip2_desc'),
     },
     {
       icon: "📚",
-      title: "Learn About Diseases",
-      desc: "Explore our plant disease library to understand symptoms and treatments.",
+      title: t('quicktips_tip3_title'),
+      desc: t('quicktips_tip3_desc'),
     },
     {
       icon: "📝",
-      title: "Read Plant Care Blogs",
-      desc: "Discover useful farming tips and plant care advice from our blog.",
+      title: t('quicktips_tip4_title'),
+      desc: t('quicktips_tip4_desc'),
     },
   ];
 
@@ -29,9 +29,9 @@ const QuickTips = ({ onClose }) => {
     <div style={styles.overlay}>
       <div style={styles.modal}>
         <div style={styles.header}>
-          <h2 style={styles.title}>🌿 Plant Care Quick Guide</h2>
+          <h2 style={styles.title}>{t('quicktips_title')}</h2>
           <p style={styles.subtitle}>
-            Helpful tips to keep your plants healthy and improve AI detection.
+            {t('quicktips_subtitle')}
           </p>
         </div>
 
@@ -46,7 +46,7 @@ const QuickTips = ({ onClose }) => {
         </div>
 
         <button style={styles.closeBtn} onClick={onClose}>
-          Close
+          {t('quicktips_close')}
         </button>
       </div>
     </div>

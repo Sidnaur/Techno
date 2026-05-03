@@ -20,13 +20,13 @@ const diseases = [
   { plant: "Ornamentals", image: ornamentalsImg, category: "Ornamentals", name: "Blight", descriptionKey: "plants_d_blight_desc", symptomsKey: "plants_d_blight_symptoms", treatmentKey: "plants_d_blight_treatment" },
   { plant: "Ornamentals", image: ornamentalsImg, category: "Ornamentals", name: "Bacterial Leaf Spot", descriptionKey: "plants_d_bacterial_leaf_spot_desc", symptomsKey: "plants_d_bacterial_leaf_spot_symptoms", treatmentKey: "plants_d_bacterial_leaf_spot_treatment" },
 
-  // FRUITING PLANTS
-  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Anthracnose", descriptionKey: "plants_d_anthracnose_desc", symptomsKey: "plants_d_anthracnose_symptoms", treatmentKey: "plants_d_anthracnose_treatment" },
-  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Leaf Curl", descriptionKey: "plants_d_leaf_curl_desc", symptomsKey: "plants_d_leaf_curl_symptoms", treatmentKey: "plants_d_leaf_curl_treatment" },
-  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Citrus Canker", descriptionKey: "plants_d_citrus_canker_desc", symptomsKey: "plants_d_citrus_canker_symptoms", treatmentKey: "plants_d_citrus_canker_treatment" },
-  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Scab", descriptionKey: "plants_d_scab_desc", symptomsKey: "plants_d_scab_symptoms", treatmentKey: "plants_d_scab_treatment" },
-  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Powdery Mildew", descriptionKey: "plants_d_powdery_mildew_desc_fruit", symptomsKey: "plants_d_powdery_mildew_symptoms_fruit", treatmentKey: "plants_d_powdery_mildew_treatment_fruit" },
-  { plant: "Fruiting Plants", image: fruitsImg, category: "Fruiting Plants", name: "Leaf Spot", descriptionKey: "plants_d_leaf_spot_desc_fruit", symptomsKey: "plants_d_leaf_spot_symptoms_fruit", treatmentKey: "plants_d_leaf_spot_treatment_fruit" },
+  // FRUIT-BEARING PLANTS
+  { plant: "Fruit-Bearing Plants", image: fruitsImg, category: "Fruit-Bearing Plants", name: "Anthracnose", descriptionKey: "plants_d_anthracnose_desc", symptomsKey: "plants_d_anthracnose_symptoms", treatmentKey: "plants_d_anthracnose_treatment" },
+  { plant: "Fruit-Bearing Plants", image: fruitsImg, category: "Fruit-Bearing Plants", name: "Leaf Curl", descriptionKey: "plants_d_leaf_curl_desc", symptomsKey: "plants_d_leaf_curl_symptoms", treatmentKey: "plants_d_leaf_curl_treatment" },
+  { plant: "Fruit-Bearing Plants", image: fruitsImg, category: "Fruit-Bearing Plants", name: "Citrus Canker", descriptionKey: "plants_d_citrus_canker_desc", symptomsKey: "plants_d_citrus_canker_symptoms", treatmentKey: "plants_d_citrus_canker_treatment" },
+  { plant: "Fruit-Bearing Plants", image: fruitsImg, category: "Fruit-Bearing Plants", name: "Scab", descriptionKey: "plants_d_scab_desc", symptomsKey: "plants_d_scab_symptoms", treatmentKey: "plants_d_scab_treatment" },
+  { plant: "Fruit-Bearing Plants", image: fruitsImg, category: "Fruit-Bearing Plants", name: "Powdery Mildew", descriptionKey: "plants_d_powdery_mildew_desc_fruit", symptomsKey: "plants_d_powdery_mildew_symptoms_fruit", treatmentKey: "plants_d_powdery_mildew_treatment_fruit" },
+  { plant: "Fruit-Bearing Plants", image: fruitsImg, category: "Fruit-Bearing Plants", name: "Leaf Spot", descriptionKey: "plants_d_leaf_spot_desc_fruit", symptomsKey: "plants_d_leaf_spot_symptoms_fruit", treatmentKey: "plants_d_leaf_spot_treatment_fruit" },
 ];
 
 const PlantDiseases = () => {
@@ -45,25 +45,25 @@ const PlantDiseases = () => {
     "All", 
     { value: "Vegetables", displayKey: "plants_cat_vegetables_display" }, 
     { value: "Ornamentals", displayKey: "plants_cat_ornamentals_display" }, 
-    { value: "Fruiting Plants", displayKey: "plants_cat_fruits_display" }
+    { value: "Fruit-Bearing Plants", displayKey: "plants_cat_fruits_display" }
   ];
 
   const categoryColors = {
     Vegetables: { bg: '#e8f5e9', border: '#a5d6a7', label: '#2e7d32' },
     Ornamentals: { bg: '#f3e5f5', border: '#ce93d8', label: '#7b1fa2' },
-    "Fruiting Plants": { bg: '#fff3e0', border: '#ffcc80', label: '#ef6c00' },
+    "Fruit-Bearing Plants": { bg: '#fff3e0', border: '#ffcc80', label: '#ef6c00' },
   };
 
   const categoryImages = {
     Vegetables: vegetablesImg,
     Ornamentals: ornamentalsImg,
-    "Fruiting Plants": fruitsImg,
+    "Fruit-Bearing Plants": fruitsImg,
   };
 
   const getCategoryDisplay = (categoryValue) => {
     if (categoryValue === "Vegetables") return t("plants_cat_vegetables_display");
     if (categoryValue === "Ornamentals") return t("plants_cat_ornamentals_display");
-    if (categoryValue === "Fruiting Plants") return t("plants_cat_fruits_display");
+    if (categoryValue === "Fruit-Bearing Plants") return t("plants_cat_fruits_display");
     return categoryValue;
   };
 
