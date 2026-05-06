@@ -397,23 +397,86 @@ const DetectDisease = () => {
             {result && (
               <div style={styles.resultBox}>
                 <p style={styles.resultLabel}>{t('detect_result')}</p>
+
+                {/* Disease + Confidence */}
                 <div style={styles.resultRow}>
                   <span style={styles.resultKey}>{t('detect_disease')}</span>
-                  <span style={styles.resultValue}>{translateResultString(result.disease_name || result.disease || 'N/A')}</span>
+                  <span style={styles.resultValue}>{result.disease_name || result.disease || 'N/A'}</span>
                 </div>
                 <div style={styles.resultRow}>
                   <span style={styles.resultKey}>{t('detect_confidence')}</span>
                   <span style={styles.resultBadge}>{result.confidence_level || result.confidence || 'N/A'}</span>
                 </div>
+
+                {/* Symptoms */}
                 <div style={styles.resultRow}>
                   <span style={styles.resultKey}>{t('detect_symptoms')}</span>
-                  <span style={styles.resultValue}>{translateDiseaseField('symptoms', result.symptoms_observed || result.symptoms || 'N/A')}</span>
+                  <span style={styles.resultValue}>
+                    {translateDiseaseField('symptoms', result.symptoms_observed || result.symptoms || 'N/A')}
+                  </span>
                 </div>
+
                 <div style={styles.resultDivider} />
+
+                {/* What to do now */}
                 <p style={styles.resultKey}>{t('detect_treatment')}</p>
-                <p style={styles.resultTreatment}>{translateDiseaseField('treatment', result.recommended_treatment || result.treatment || 'N/A')}</p>
+                {Array.isArray(result.what_to_do_now) ? (
+                  <ol style={styles.tipList}>
+                    {result.what_to_do_now.map((tip, i) => (
+                      <li key={i} style={styles.tipItem}>
+                        <span style={styles.tipNumber}>{i + 1}</span>
+                        <span style={styles.tipText}>{tip}</span>
+                      </li>
+                    ))}
+                  </ol>
+                ) : (
+                  <p style={styles.resultTreatment}>
+                    {translateDiseaseField('treatment', result.recommended_treatment || result.treatment || 'N/A')}
+                  </p>
+                )}
+
+                {/* What to buy */}
+                {Array.isArray(result.what_to_buy) && result.what_to_buy.length > 0 && (
+                  <>
+                    <div style={styles.resultDivider} />
+                    <p style={styles.resultKey}>🛒 What to Buy at the Agri-Store</p>
+                    <ul style={styles.buyList}>
+                      {result.what_to_buy.map((item, i) => (
+                        <li key={i} style={styles.buyItem}>
+                          <span style={styles.buyDot}>•</span>
+                          <span style={styles.tipText}>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+
+                {/* What to tell the store */}
+                {result.what_to_tell_the_store && result.what_to_tell_the_store !== 'N/A' && (
+                  <div style={styles.storeBox}>
+                    <p style={styles.storeLabel}>💬 What to say at the store:</p>
+                    <p style={styles.storeText}>"{result.what_to_tell_the_store}"</p>
+                  </div>
+                )}
+
+                <div style={styles.resultDivider} />
+
+                {/* Preventive measures */}
                 <p style={styles.resultKey}>{t('detect_prevention')}</p>
-                <p style={styles.resultTreatment}>{translateDiseaseField('prevention', result.preventive_measures || result.prevention || result.recommended_treatment || 'N/A')}</p>
+                {Array.isArray(result.preventive_measures) ? (
+                  <ol style={styles.tipList}>
+                    {result.preventive_measures.map((tip, i) => (
+                      <li key={i} style={styles.tipItem}>
+                        <span style={styles.tipNumber}>{i + 1}</span>
+                        <span style={styles.tipText}>{tip}</span>
+                      </li>
+                    ))}
+                  </ol>
+                ) : (
+                  <p style={styles.resultTreatment}>
+                    {translateDiseaseField('prevention', result.preventive_measures || result.prevention || 'N/A')}
+                  </p>
+                )}
               </div>
             )}
           </div>
@@ -928,6 +991,84 @@ const styles = {
     padding: '14px 16px',
   },
   noteText: { fontSize: '0.85rem', color: '#555', lineHeight: '1.6', margin: 0 },
+
+  // Tip lists
+  tipList: {
+    listStyle: 'none',
+    padding: 0,
+    margin: '0 0 12px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+  },
+  tipItem: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '10px',
+    background: '#f8fdf8',
+    border: '1px solid #e0ece0',
+    borderRadius: '8px',
+    padding: '10px 12px',
+  },
+  tipNumber: {
+    flexShrink: 0,
+    width: '22px',
+    height: '22px',
+    background: '#2d6a2d',
+    color: 'white',
+    borderRadius: '50%',
+    fontSize: '0.72rem',
+    fontWeight: '800',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tipText: {
+    fontSize: '0.85rem',
+    color: '#333',
+    lineHeight: '1.55',
+  },
+  buyList: {
+    listStyle: 'none',
+    padding: 0,
+    margin: '0 0 12px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px',
+  },
+  buyItem: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '8px',
+  },
+  buyDot: {
+    color: '#2d6a2d',
+    fontWeight: '800',
+    fontSize: '1rem',
+    flexShrink: 0,
+    lineHeight: '1.4',
+  },
+  storeBox: {
+    background: '#fffbf0',
+    border: '1px solid #f5e6b8',
+    borderLeft: '4px solid #f5a623',
+    borderRadius: '8px',
+    padding: '12px 14px',
+    margin: '10px 0',
+  },
+  storeLabel: {
+    fontSize: '0.78rem',
+    fontWeight: '700',
+    color: '#b07d00',
+    margin: '0 0 4px',
+  },
+  storeText: {
+    fontSize: '0.88rem',
+    color: '#444',
+    lineHeight: '1.55',
+    margin: 0,
+    fontStyle: 'italic',
+  },
 };
 
 // Inject spinner keyframe
