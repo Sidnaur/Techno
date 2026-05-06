@@ -29,41 +29,135 @@ const DetectDisease = () => {
     'scab': 'plants_d_scab',
   };
 
+  const normalizeText = (value) =>
+    value
+      ?.toString()
+      .trim()
+      .replace(/\s+/g, ' ')
+      .replace(/[.,!?]+$/g, '')
+      .toLowerCase() || '';
+
+  const normalizeDiseaseName = (value) => {
+    let normalized = normalizeText(value);
+    if (normalized.endsWith(' disease')) {
+      normalized = normalized.slice(0, -' disease'.length).trim();
+    }
+    return normalized;
+  };
+
   const getDiseaseKey = (diseaseName) => {
     if (!diseaseName) return null;
-    const normalized = diseaseName.toLowerCase().trim();
+    const normalized = normalizeDiseaseName(diseaseName);
+    if (!normalized) return null;
+    const exact = diseaseTranslationMap[normalized];
+    if (exact) return exact;
     return (
-      diseaseTranslationMap[normalized] ||
-      Object.entries(diseaseTranslationMap).find(([phrase]) => normalized.includes(phrase))?.[1] ||
-      null
+      Object.entries(diseaseTranslationMap).find(([phrase]) => {
+        const normalizedPhrase = normalizeText(phrase);
+        return normalized === normalizedPhrase || normalized === `${normalizedPhrase} disease`;
+      })?.[1] || null
     );
   };
 
   const resultTranslationMap = new Map([
     ['not a plant image', 'detect_not_plant_image'],
-    ['the uploaded image does not appear to be a plant leaf.', 'detect_not_plant_leaf'],
-    ['please upload a clear photo of a plant leaf.', 'detect_upload_clear_leaf'],
-  ]);
+    ['the uploaded image does not appear to be a plant leaf', 'detect_not_plant_leaf'],
+    ['please upload a clear photo of a plant leaf', 'detect_upload_clear_leaf'],
+    ['remove the badly damaged leaves to prevent the disease from spreading', 'detect_tip_remove_damaged_leaves'],
+    ['water the plants carefully to avoid splashing water on the leaves', 'detect_tip_water_carefully'],
+    ['spray the plants with a fungicide to kill the disease', 'detect_tip_spray_fungicide'],
+    ['dithane m-45 — a fungicide that can be found in most agri-supply stores in the philippines', 'detect_buy_dithane'],
+    ['agrimycin — an antibiotic spray that can help control bacterial infections', 'detect_buy_agrimycin'],
+    ['i need a fungicide spray to treat leaf spot disease on my plants', 'detect_store_phrase_fungicide'],
+  ].map(([text, key]) => [normalizeText(text), key]));
+
+  const translateResultKeywords = (value) => {
+    if (!value) return null;
+    const normalized = normalizeText(value);
+    if (normalized.includes('remove') && normalized.includes('leave')) return t('detect_tip_remove_damaged_leaves');
+    if (normalized.includes('water') && normalized.includes('leaf')) return t('detect_tip_water_carefully');
+    if (normalized.includes('fungicide')) return t('detect_tip_spray_fungicide');
+    if (normalized.includes('dithane')) return t('detect_buy_dithane');
+    if (normalized.includes('agrimycin')) return t('detect_buy_agrimycin');
+    if (normalized.includes('need') && normalized.includes('fungicide') && normalized.includes('leaf spot')) return t('detect_store_phrase_fungicide');
+    return null;
+  };
 
   const translateResultString = (value) => {
     if (!value) return value;
-    const key = resultTranslationMap.get(value.toString().trim().toLowerCase());
-    return key ? t(key) : value;
+    const normalized = normalizeText(value);
+    const key = resultTranslationMap.get(normalized);
+    if (key) return t(key);
+    const keywordTranslation = translateResultKeywords(value);
+    return keywordTranslation || value;
+  };
+
+  const translateDiseaseName = (diseaseName) => {
+    if (!diseaseName) return diseaseName;
+    const baseKey = getDiseaseKey(diseaseName);
+    if (!baseKey) return diseaseName;
+    const translated = t(baseKey);
+    return translated !== baseKey ? translated : diseaseName;
+  };
+
+  const translateDynamicResult = (value) => {
+    if (Array.isArray(value)) {
+      return value.map((item) => translateDynamicResult(item));
+    }
+    if (typeof value !== 'string') return value;
+
+    const resultString = translateResultString(value);
+    if (resultString !== value) return resultString;
+
+    const diseaseName = translateDiseaseName(value);
+    if (diseaseName !== value) return diseaseName;
+
+    return value;
+  };
+
+  const translateBuyItem = (item) => {
+    if (!item) return item;
+    const normalized = normalizeText(item);
+    if (normalized.includes('dithane')) return t('detect_buy_dithane');
+    if (normalized.includes('agrimycin')) return t('detect_buy_agrimycin');
+    return translateDynamicResult(item);
+  };
+
+  const translateStorePhrase = (phrase) => {
+    if (!phrase) return phrase;
+    const normalized = normalizeText(phrase);
+    if (normalized.includes('fungicide') && normalized.includes('leaf spot')) return t('detect_store_phrase_fungicide');
+    return translateDynamicResult(phrase);
   };
 
   const translateDiseaseField = (field, fallback) => {
     const diseaseName = result?.disease_name || result?.disease || '';
     const baseKey = getDiseaseKey(diseaseName);
-    if (!baseKey) return translateResultString(fallback);
+    if (!baseKey) return translateDynamicResult(fallback);
+
     const translationKey = `${baseKey}_${field}`;
     const translated = t(translationKey);
     if (translated !== translationKey) return translated;
+
     if (field === 'prevention') {
       const treatmentKey = `${baseKey}_treatment`;
       const translatedTreatment = t(treatmentKey);
       if (translatedTreatment !== treatmentKey) return translatedTreatment;
     }
-    return translateResultString(fallback);
+
+    return translateDynamicResult(fallback);
+  };
+
+  const translateArrayOrDisease = (value, field) => {
+    if (!value) return [];
+    if (!Array.isArray(value)) return translateDiseaseField(field, value);
+
+    const translated = value.map((item) => translateDynamicResult(item));
+    const allTranslated = translated.every((item, index) => item !== value[index]);
+    if (allTranslated) return translated;
+
+    const fallback = translateDiseaseField(field, value.join(' '));
+    return Array.isArray(fallback) ? fallback : [fallback];
   };
 
   // Camera states
@@ -401,7 +495,7 @@ const DetectDisease = () => {
                 {/* Disease + Confidence */}
                 <div style={styles.resultRow}>
                   <span style={styles.resultKey}>{t('detect_disease')}</span>
-                  <span style={styles.resultValue}>{result.disease_name || result.disease || 'N/A'}</span>
+                  <span style={styles.resultValue}>{translateDiseaseName(result.disease_name || result.disease || 'N/A')}</span>
                 </div>
                 <div style={styles.resultRow}>
                   <span style={styles.resultKey}>{t('detect_confidence')}</span>
@@ -422,7 +516,7 @@ const DetectDisease = () => {
                 <p style={styles.resultKey}>{t('detect_treatment')}</p>
                 {Array.isArray(result.what_to_do_now) ? (
                   <ol style={styles.tipList}>
-                    {result.what_to_do_now.map((tip, i) => (
+                    {translateArrayOrDisease(result.what_to_do_now, 'treatment').map((tip, i) => (
                       <li key={i} style={styles.tipItem}>
                         <span style={styles.tipNumber}>{i + 1}</span>
                         <span style={styles.tipText}>{tip}</span>
@@ -439,12 +533,12 @@ const DetectDisease = () => {
                 {Array.isArray(result.what_to_buy) && result.what_to_buy.length > 0 && (
                   <>
                     <div style={styles.resultDivider} />
-                    <p style={styles.resultKey}>🛒 What to Buy at the Agri-Store</p>
+                    <p style={styles.resultKey}>{t('detect_buy_title')}</p>
                     <ul style={styles.buyList}>
                       {result.what_to_buy.map((item, i) => (
                         <li key={i} style={styles.buyItem}>
                           <span style={styles.buyDot}>•</span>
-                          <span style={styles.tipText}>{item}</span>
+                          <span style={styles.tipText}>{translateBuyItem(item)}</span>
                         </li>
                       ))}
                     </ul>
@@ -454,8 +548,8 @@ const DetectDisease = () => {
                 {/* What to tell the store */}
                 {result.what_to_tell_the_store && result.what_to_tell_the_store !== 'N/A' && (
                   <div style={styles.storeBox}>
-                    <p style={styles.storeLabel}>💬 What to say at the store:</p>
-                    <p style={styles.storeText}>"{result.what_to_tell_the_store}"</p>
+                    <p style={styles.storeLabel}>{t('detect_store_label')}</p>
+                    <p style={styles.storeText}>"{translateStorePhrase(result.what_to_tell_the_store)}"</p>
                   </div>
                 )}
 
@@ -465,7 +559,7 @@ const DetectDisease = () => {
                 <p style={styles.resultKey}>{t('detect_prevention')}</p>
                 {Array.isArray(result.preventive_measures) ? (
                   <ol style={styles.tipList}>
-                    {result.preventive_measures.map((tip, i) => (
+                    {translateArrayOrDisease(result.preventive_measures, 'prevention').map((tip, i) => (
                       <li key={i} style={styles.tipItem}>
                         <span style={styles.tipNumber}>{i + 1}</span>
                         <span style={styles.tipText}>{tip}</span>
