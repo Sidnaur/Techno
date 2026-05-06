@@ -2,11 +2,11 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import logoImg from "../assets/AgriLogo.png";
 import QuickTips from "./QuickTips";
-import { useLanguage } from "../context/LanguageContext"; //
+import { useLanguage } from "../context/LanguageContext";
 
 const Navbar = () => {
   const [showQuickTips, setShowQuickTips] = useState(false);
-  const { t } = useLanguage(); // 
+  const { t } = useLanguage();
 
   const handleQuickTips = () => setShowQuickTips(true);
 
@@ -73,13 +73,14 @@ const styles = {
   logo: {
     display: "flex",
     alignItems: "center",
-    gap: "8px",
-    fontWeight: "bold",
-    fontSize: "1.3rem",
+    gap: "0px",
+    fontWeight: "800",
+    fontSize: "1.4rem",
     color: "#2d6a2d",
+    letterSpacing: "0.3px",
   },
   logoImg: {
-    height: "40px",
+    height: "42px",
     width: "auto",
   },
   links: {
