@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import logoImg from "../assets/agri.png";
+import logoImg from "../assets/AgriLogo.png";
 import QuickTips from "./QuickTips";
-import { useLanguage } from "../context/LanguageContext"; // ✅ missing import added
+import { useLanguage } from "../context/LanguageContext"; //
 
 const Navbar = () => {
   const [showQuickTips, setShowQuickTips] = useState(false);
-  const { t } = useLanguage(); // ✅ already there, now works with the import
+  const { t } = useLanguage(); // 
 
   const handleQuickTips = () => setShowQuickTips(true);
 
