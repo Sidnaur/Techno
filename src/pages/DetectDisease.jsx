@@ -39,10 +39,22 @@ const DetectDisease = () => {
     );
   };
 
+  const resultTranslationMap = new Map([
+    ['not a plant image', 'detect_not_plant_image'],
+    ['the uploaded image does not appear to be a plant leaf.', 'detect_not_plant_leaf'],
+    ['please upload a clear photo of a plant leaf.', 'detect_upload_clear_leaf'],
+  ]);
+
+  const translateResultString = (value) => {
+    if (!value) return value;
+    const key = resultTranslationMap.get(value.toString().trim().toLowerCase());
+    return key ? t(key) : value;
+  };
+
   const translateDiseaseField = (field, fallback) => {
     const diseaseName = result?.disease_name || result?.disease || '';
     const baseKey = getDiseaseKey(diseaseName);
-    if (!baseKey) return fallback;
+    if (!baseKey) return translateResultString(fallback);
     const translationKey = `${baseKey}_${field}`;
     const translated = t(translationKey);
     if (translated !== translationKey) return translated;
@@ -51,7 +63,7 @@ const DetectDisease = () => {
       const translatedTreatment = t(treatmentKey);
       if (translatedTreatment !== treatmentKey) return translatedTreatment;
     }
-    return fallback;
+    return translateResultString(fallback);
   };
 
   // Camera states
@@ -387,7 +399,7 @@ const DetectDisease = () => {
                 <p style={styles.resultLabel}>{t('detect_result')}</p>
                 <div style={styles.resultRow}>
                   <span style={styles.resultKey}>{t('detect_disease')}</span>
-                  <span style={styles.resultValue}>{result.disease_name || result.disease || 'N/A'}</span>
+                  <span style={styles.resultValue}>{translateResultString(result.disease_name || result.disease || 'N/A')}</span>
                 </div>
                 <div style={styles.resultRow}>
                   <span style={styles.resultKey}>{t('detect_confidence')}</span>
