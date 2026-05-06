@@ -3,21 +3,39 @@ import { useLanguage } from '../context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import heroBg from '../assets/Early Stages Of Plant Growth Background.jpg';
 
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+  return isMobile;
+};
+
 const Hero = () => {
   const [visible, setVisible] = useState(false);
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     setTimeout(() => setVisible(true), 100);
   }, []);
 
   return (
-    <div style={styles.hero}>
+    <div style={{
+      ...styles.hero,
+      padding: isMobile ? '0 24px' : '0 6vw',
+      minHeight: isMobile ? '100svh' : '100vh',
+      alignItems: isMobile ? 'flex-end' : 'center',
+      paddingBottom: isMobile ? '80px' : '0',
+    }}>
       <div style={{ ...styles.bgImage, backgroundImage: `url(${heroBg})` }} />
       <div style={styles.overlay} />
 
-      {[...Array(6)].map((_, i) => (
+      {/* Particles — fewer on mobile */}
+      {[...Array(isMobile ? 3 : 6)].map((_, i) => (
         <div key={i} style={{
           ...styles.particle,
           width: `${10 + i * 8}px`,
@@ -34,60 +52,77 @@ const Hero = () => {
         opacity: visible ? 1 : 0,
         transform: visible ? 'translateY(0)' : 'translateY(30px)',
         transition: 'all 0.8s ease',
+        maxWidth: isMobile ? '100%' : '580px',
+        textAlign: isMobile ? 'center' : 'left',
+        alignItems: isMobile ? 'center' : 'flex-start',
       }}>
         <div style={styles.badge}>
           <span style={styles.badgeDot} />
-          {t('hero_badge')}                         {/* ✅ */}
+          {t('hero_badge')}
         </div>
 
-        <h1 style={styles.title}>
-          {t('hero_title_line1')}                   {/* ✅ */}
-          <span style={styles.titleAccent}> {t('hero_title_accent')}</span>  {/* ✅ */}
-          <br />{t('hero_title_line2')}             {/* ✅ */}
+        <h1 style={{
+          ...styles.title,
+          fontSize: isMobile ? 'clamp(2rem, 8vw, 2.8rem)' : 'clamp(2.5rem, 5vw, 4.5rem)',
+        }}>
+          {t('hero_title_line1')}
+          <span style={styles.titleAccent}> {t('hero_title_accent')}</span>
+          <br />{t('hero_title_line2')}
         </h1>
 
-        <p style={styles.subtitle}>
-          {t('hero_subtitle')}                      {/* ✅ */}
+        <p style={{
+          ...styles.subtitle,
+          fontSize: isMobile ? '0.95rem' : 'clamp(0.95rem, 1.5vw, 1.1rem)',
+          marginBottom: isMobile ? '28px' : '36px',
+        }}>
+          {t('hero_subtitle')}
         </p>
 
-        <div style={styles.buttons}>
+        <div style={{
+          ...styles.buttons,
+          flexDirection: isMobile ? 'column' : 'row',
+          width: isMobile ? '100%' : 'auto',
+        }}>
           <button
-            style={styles.primaryBtn}
+            style={{
+              ...styles.primaryBtn,
+              width: isMobile ? '100%' : 'auto',
+            }}
             onClick={() => navigate('/detect')}
             onMouseEnter={e => e.target.style.transform = 'translateY(-2px)'}
             onMouseLeave={e => e.target.style.transform = 'translateY(0)'}
           >
-            🔬 {t('hero_cta')}                     {/* ✅ */}
+            🔬 {t('hero_cta')}
           </button>
           <button
-            style={styles.secondaryBtn}
+            style={{
+              ...styles.secondaryBtn,
+              width: isMobile ? '100%' : 'auto',
+            }}
             onClick={() => navigate('/about')}
             onMouseEnter={e => e.target.style.background = 'rgba(255,255,255,0.15)'}
             onMouseLeave={e => e.target.style.background = 'transparent'}
           >
-            {t('hero_learn')} →                    {/* ✅ */}
+            {t('hero_learn')} →
           </button>
         </div>
       </div>
 
       <div style={styles.scrollIndicator}>
         <div style={styles.scrollDot} />
-        <span style={styles.scrollText}>{t('hero_scroll')}</span>  {/* ✅ */}
+        <span style={styles.scrollText}>{t('hero_scroll')}</span>
       </div>
     </div>
   );
 };
 
-// styles — completely unchanged
 const styles = {
   hero: {
     position: 'relative',
-    minHeight: '100vh',
     width: '100%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    padding: '0 6vw',
     boxSizing: 'border-box',
     overflow: 'hidden',
   },
@@ -116,9 +151,10 @@ const styles = {
   content: {
     position: 'relative',
     zIndex: 10,
-    maxWidth: '580px',
     color: 'white',
     paddingTop: '20px',
+    display: 'flex',
+    flexDirection: 'column',
   },
   badge: {
     display: 'inline-flex',
@@ -134,6 +170,7 @@ const styles = {
     marginBottom: '24px',
     color: '#a5d6a7',
     letterSpacing: '0.5px',
+    alignSelf: 'flex-start',
   },
   badgeDot: {
     width: '8px',
@@ -144,7 +181,6 @@ const styles = {
     display: 'inline-block',
   },
   title: {
-    fontSize: 'clamp(2.5rem, 5vw, 4.5rem)',
     fontWeight: '900',
     margin: '0 0 20px',
     lineHeight: '1.1',
@@ -152,9 +188,7 @@ const styles = {
   },
   titleAccent: { color: '#f5a623' },
   subtitle: {
-    fontSize: 'clamp(0.95rem, 1.5vw, 1.1rem)',
     maxWidth: '500px',
-    marginBottom: '36px',
     lineHeight: '1.8',
     color: 'rgba(255,255,255,0.8)',
   },
