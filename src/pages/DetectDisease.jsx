@@ -2,6 +2,16 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { useLanguage } from '../context/LanguageContext'; 
 import api from '../api';
 
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+  return isMobile;
+};
+
 const DetectDisease = () => {
   const [dragOver, setDragOver] = useState(false);
   const [image, setImage] = useState(null);
@@ -10,7 +20,8 @@ const DetectDisease = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
-  const { t } = useLanguage(); 
+  const { t } = useLanguage();
+  const isMobile = useIsMobile();
 
   const diseaseTranslationMap = {
     'septoria leaf spot': 'plants_d_leaf_spot',
@@ -30,18 +41,11 @@ const DetectDisease = () => {
   };
 
   const normalizeText = (value) =>
-    value
-      ?.toString()
-      .trim()
-      .replace(/\s+/g, ' ')
-      .replace(/[.,!?]+$/g, '')
-      .toLowerCase() || '';
+    value?.toString().trim().replace(/\s+/g, ' ').replace(/[.,!?]+$/g, '').toLowerCase() || '';
 
   const normalizeDiseaseName = (value) => {
     let normalized = normalizeText(value);
-    if (normalized.endsWith(' disease')) {
-      normalized = normalized.slice(0, -' disease'.length).trim();
-    }
+    if (normalized.endsWith(' disease')) normalized = normalized.slice(0, -' disease'.length).trim();
     return normalized;
   };
 
@@ -51,12 +55,10 @@ const DetectDisease = () => {
     if (!normalized) return null;
     const exact = diseaseTranslationMap[normalized];
     if (exact) return exact;
-    return (
-      Object.entries(diseaseTranslationMap).find(([phrase]) => {
-        const normalizedPhrase = normalizeText(phrase);
-        return normalized === normalizedPhrase || normalized === `${normalizedPhrase} disease`;
-      })?.[1] || null
-    );
+    return Object.entries(diseaseTranslationMap).find(([phrase]) => {
+      const normalizedPhrase = normalizeText(phrase);
+      return normalized === normalizedPhrase || normalized === `${normalizedPhrase} disease`;
+    })?.[1] || null;
   };
 
   const resultTranslationMap = new Map([
@@ -101,17 +103,12 @@ const DetectDisease = () => {
   };
 
   const translateDynamicResult = (value) => {
-    if (Array.isArray(value)) {
-      return value.map((item) => translateDynamicResult(item));
-    }
+    if (Array.isArray(value)) return value.map((item) => translateDynamicResult(item));
     if (typeof value !== 'string') return value;
-
     const resultString = translateResultString(value);
     if (resultString !== value) return resultString;
-
     const diseaseName = translateDiseaseName(value);
     if (diseaseName !== value) return diseaseName;
-
     return value;
   };
 
@@ -134,28 +131,23 @@ const DetectDisease = () => {
     const diseaseName = result?.disease_name || result?.disease || '';
     const baseKey = getDiseaseKey(diseaseName);
     if (!baseKey) return translateDynamicResult(fallback);
-
     const translationKey = `${baseKey}_${field}`;
     const translated = t(translationKey);
     if (translated !== translationKey) return translated;
-
     if (field === 'prevention') {
       const treatmentKey = `${baseKey}_treatment`;
       const translatedTreatment = t(treatmentKey);
       if (translatedTreatment !== treatmentKey) return translatedTreatment;
     }
-
     return translateDynamicResult(fallback);
   };
 
   const translateArrayOrDisease = (value, field) => {
     if (!value) return [];
     if (!Array.isArray(value)) return translateDiseaseField(field, value);
-
     const translated = value.map((item) => translateDynamicResult(item));
     const allTranslated = translated.every((item, index) => item !== value[index]);
     if (allTranslated) return translated;
-
     const fallback = translateDiseaseField(field, value.join(' '));
     return Array.isArray(fallback) ? fallback : [fallback];
   };
@@ -164,12 +156,11 @@ const DetectDisease = () => {
   const [cameraOpen, setCameraOpen] = useState(false);
   const [cameraError, setCameraError] = useState(null);
   const [capturing, setCapturing] = useState(false);
-  const [facingMode, setFacingMode] = useState('environment'); // back camera default
+  const [facingMode, setFacingMode] = useState('environment');
   const videoRef = useRef(null);
   const streamRef = useRef(null);
   const canvasRef = useRef(null);
 
-  // Start camera
   const startCamera = useCallback(async () => {
     setCameraError(null);
     setCameraOpen(true);
@@ -181,16 +172,13 @@ const DetectDisease = () => {
       if (videoRef.current) videoRef.current.srcObject = stream;
     } catch (err) {
       setCameraError(
-        err.name === 'NotAllowedError'
-          ? t('cam_err_permission')
-          : err.name === 'NotFoundError'
-          ? t('cam_err_notfound')
-          : t('cam_err_generic')
+        err.name === 'NotAllowedError' ? t('cam_err_permission')
+        : err.name === 'NotFoundError' ? t('cam_err_notfound')
+        : t('cam_err_generic')
       );
     }
   }, [facingMode, t]);
 
-  // Stop camera
   const stopCamera = () => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
@@ -201,11 +189,9 @@ const DetectDisease = () => {
     setCapturing(false);
   };
 
-  // Flip camera (mobile)
   const flipCamera = async () => {
     stopCamera();
-    const next = facingMode === 'environment' ? 'user' : 'environment';
-    setFacingMode(next);
+    setFacingMode(facingMode === 'environment' ? 'user' : 'environment');
   };
 
   useEffect(() => {
@@ -214,7 +200,6 @@ const DetectDisease = () => {
 
   useEffect(() => { return () => stopCamera(); }, []);
 
-  // Capture photo from video
   const capturePhoto = () => {
     if (!videoRef.current || !canvasRef.current) return;
     setCapturing(true);
@@ -235,7 +220,6 @@ const DetectDisease = () => {
     }, 'image/jpeg', 0.92);
   };
 
-  // File upload handlers
   const handleFile = (file) => {
     if (file) {
       setImage(URL.createObjectURL(file));
@@ -245,14 +229,9 @@ const DetectDisease = () => {
       setError(null);
     }
   };
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setDragOver(false);
-    handleFile(e.dataTransfer.files[0]);
-  };
+  const handleDrop = (e) => { e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files[0]); };
   const handleChange = (e) => handleFile(e.target.files[0]);
 
-  // Detect
   const handleDetect = async () => {
     if (!imageFile) return;
     try {
@@ -277,21 +256,18 @@ const DetectDisease = () => {
       {/* Camera Modal */}
       {cameraOpen && (
         <div style={styles.cameraOverlay}>
-          <div style={styles.cameraModal}>
-            {/* Header */}
+          <div style={{ ...styles.cameraModal, maxWidth: isMobile ? '100%' : '680px' }}>
             <div style={styles.cameraHeader}>
               <div style={styles.cameraHeaderLeft}>
                 <div style={styles.cameraIndicator} />
                 <span style={styles.cameraHeaderTitle}>{t('cam_live')}</span>
               </div>
-              <button onClick={stopCamera} style={styles.cameraCloseBtn} title={t('cam_close')}>
+              <button onClick={stopCamera} style={styles.cameraCloseBtn}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
               </button>
             </div>
-
-            {/* Video / Error */}
             <div style={styles.cameraViewport}>
               {cameraError ? (
                 <div style={styles.cameraErrorState}>
@@ -307,14 +283,7 @@ const DetectDisease = () => {
                 </div>
               ) : (
                 <>
-                  <video
-                    ref={videoRef}
-                    autoPlay
-                    playsInline
-                    muted
-                    style={styles.video}
-                  />
-                  {/* Leaf guide overlay */}
+                  <video ref={videoRef} autoPlay playsInline muted style={styles.video} />
                   <div style={styles.guideOverlay}>
                     <div style={styles.guideFrame}>
                       <span style={{...styles.guideCorner, top: 0, left: 0, borderRight: 'none', borderBottom: 'none'}} />
@@ -327,27 +296,18 @@ const DetectDisease = () => {
                 </>
               )}
             </div>
-
-            {/* Controls */}
             {!cameraError && (
-              <div style={styles.cameraControls}>
-                <button onClick={flipCamera} style={styles.flipBtn} title={t('cam_flip')}>
+              <div style={{ ...styles.cameraControls, padding: isMobile ? '16px 20px' : '20px 40px' }}>
+                <button onClick={flipCamera} style={styles.flipBtn}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M1 4v6h6"/><path d="M23 20v-6h-6"/>
                     <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
                   </svg>
                   <span>{t('cam_flip')}</span>
                 </button>
-
-                <button
-                  onClick={capturePhoto}
-                  style={styles.captureBtn}
-                  disabled={capturing}
-                  title={t('cam_capture')}
-                >
+                <button onClick={capturePhoto} style={styles.captureBtn} disabled={capturing}>
                   <div style={styles.captureBtnInner} />
                 </button>
-
                 <button onClick={stopCamera} style={styles.cancelCameraBtn}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -362,7 +322,7 @@ const DetectDisease = () => {
       )}
 
       {/* Header */}
-      <div style={styles.header}>
+      <div style={{ ...styles.header, padding: isMobile ? '40px 24px 32px' : '60px 60px 50px' }}>
         <div style={styles.headerInner}>
           <div style={styles.titleRow}>
             <div style={styles.titleBar} />
@@ -373,14 +333,17 @@ const DetectDisease = () => {
       </div>
 
       {/* Main content */}
-      <div style={styles.content}>
-        <div style={styles.twoCol}>
+      <div style={{ ...styles.content, padding: isMobile ? '24px 16px' : '0 40px' }}>
+        <div style={{
+          ...styles.twoCol,
+          gridTemplateColumns: isMobile ? '1fr' : '1.3fr 1fr',
+          gap: isMobile ? '24px' : '40px',
+        }}>
 
           {/* Left — Upload */}
           <div style={styles.leftCol}>
             <p style={styles.sectionLabel}>{t('detect_step1_label')}</p>
 
-            {/* Input method tabs */}
             <div style={styles.methodTabs}>
               <label style={styles.methodTab}>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -404,6 +367,7 @@ const DetectDisease = () => {
                 ...styles.uploadCard,
                 borderColor: dragOver ? '#2d6a2d' : image ? '#2d6a2d' : '#c8dfc8',
                 background: dragOver ? '#f0faf0' : 'white',
+                minHeight: isMobile ? '260px' : '380px',
               }}
               onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
               onDragLeave={() => setDragOver(false)}
@@ -420,9 +384,7 @@ const DetectDisease = () => {
                       <span style={styles.fileName}>{fileName}</span>
                     </div>
                     <div style={styles.previewActions}>
-                      <button style={styles.retakeBtn} onClick={startCamera}>
-                        {t('detect_retake')}
-                      </button>
+                      <button style={styles.retakeBtn} onClick={startCamera}>{t('detect_retake')}</button>
                       <label style={styles.reuploadBtn}>
                         {t('detect_replace')}
                         <input type="file" accept="image/*" onChange={handleChange} style={{ display: 'none' }} />
@@ -431,7 +393,7 @@ const DetectDisease = () => {
                   </div>
                 </div>
               ) : (
-                <div style={styles.uploadInner}>
+                <div style={{ ...styles.uploadInner, padding: isMobile ? '32px 20px' : '50px 40px' }}>
                   <div style={styles.uploadIconBox}>
                     <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#2d6a2d" strokeWidth="1.5">
                       <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
@@ -439,7 +401,9 @@ const DetectDisease = () => {
                       <line x1="12" y1="3" x2="12" y2="15"/>
                     </svg>
                   </div>
-                  <h3 style={styles.uploadTitle}>{t('detect_drag_title')}</h3>
+                  <h3 style={styles.uploadTitle}>
+                    {isMobile ? t('detect_browse') : t('detect_drag_title')}
+                  </h3>
                   <p style={styles.uploadSub}>{t('detect_drag_sub')}</p>
                   <div style={styles.divider}>
                     <span style={styles.dividerLine} />
@@ -465,11 +429,7 @@ const DetectDisease = () => {
 
             {image && (
               <button
-                style={{
-                  ...styles.analyzeBtn,
-                  opacity: loading ? 0.7 : 1,
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                }}
+                style={{ ...styles.analyzeBtn, opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
                 onClick={handleDetect}
                 disabled={loading}
               >
@@ -491,8 +451,6 @@ const DetectDisease = () => {
             {result && (
               <div style={styles.resultBox}>
                 <p style={styles.resultLabel}>{t('detect_result')}</p>
-
-                {/* Disease + Confidence */}
                 <div style={styles.resultRow}>
                   <span style={styles.resultKey}>{t('detect_disease')}</span>
                   <span style={styles.resultValue}>{translateDiseaseName(result.disease_name || result.disease || 'N/A')}</span>
@@ -501,18 +459,13 @@ const DetectDisease = () => {
                   <span style={styles.resultKey}>{t('detect_confidence')}</span>
                   <span style={styles.resultBadge}>{result.confidence_level || result.confidence || 'N/A'}</span>
                 </div>
-
-                {/* Symptoms */}
-                <div style={styles.resultRow}>
+                <div style={{ ...styles.resultRow, alignItems: 'flex-start', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? '4px' : '0' }}>
                   <span style={styles.resultKey}>{t('detect_symptoms')}</span>
-                  <span style={styles.resultValue}>
+                  <span style={{ ...styles.resultValue, maxWidth: isMobile ? '100%' : '60%', textAlign: isMobile ? 'left' : 'right' }}>
                     {translateDiseaseField('symptoms', result.symptoms_observed || result.symptoms || 'N/A')}
                   </span>
                 </div>
-
                 <div style={styles.resultDivider} />
-
-                {/* What to do now */}
                 <p style={styles.resultKey}>{t('detect_treatment')}</p>
                 {Array.isArray(result.what_to_do_now) ? (
                   <ol style={styles.tipList}>
@@ -528,8 +481,6 @@ const DetectDisease = () => {
                     {translateDiseaseField('treatment', result.recommended_treatment || result.treatment || 'N/A')}
                   </p>
                 )}
-
-                {/* What to buy */}
                 {Array.isArray(result.what_to_buy) && result.what_to_buy.length > 0 && (
                   <>
                     <div style={styles.resultDivider} />
@@ -544,18 +495,13 @@ const DetectDisease = () => {
                     </ul>
                   </>
                 )}
-
-                {/* What to tell the store */}
                 {result.what_to_tell_the_store && result.what_to_tell_the_store !== 'N/A' && (
                   <div style={styles.storeBox}>
                     <p style={styles.storeLabel}>{t('detect_store_label')}</p>
                     <p style={styles.storeText}>"{translateStorePhrase(result.what_to_tell_the_store)}"</p>
                   </div>
                 )}
-
                 <div style={styles.resultDivider} />
-
-                {/* Preventive measures */}
                 <p style={styles.resultKey}>{t('detect_prevention')}</p>
                 {Array.isArray(result.preventive_measures) ? (
                   <ol style={styles.tipList}>
@@ -596,14 +542,12 @@ const DetectDisease = () => {
                 </div>
               ))}
             </div>
-
             <div style={styles.noteBox}>
               <p style={styles.noteText}>
                 <strong>{t('detect_advisory_label')}</strong> {t('detect_advisory_text')}
               </p>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -612,560 +556,290 @@ const DetectDisease = () => {
 
 const styles = {
   page: { minHeight: '100vh', background: '#f4f9f4', paddingBottom: '80px' },
-
-  // Camera overlay
   cameraOverlay: {
-    position: 'fixed',
-    inset: 0,
+    position: 'fixed', inset: 0,
     background: 'rgba(0,0,0,0.85)',
     zIndex: 9000,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '20px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    padding: '12px',
   },
   cameraModal: {
-    background: '#111',
-    borderRadius: '16px',
-    overflow: 'hidden',
-    width: '100%',
-    maxWidth: '680px',
-    display: 'flex',
-    flexDirection: 'column',
+    background: '#111', borderRadius: '16px',
+    overflow: 'hidden', width: '100%',
+    display: 'flex', flexDirection: 'column',
   },
   cameraHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '14px 18px',
-    background: '#1a1a1a',
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '14px 18px', background: '#1a1a1a',
     borderBottom: '1px solid #333',
   },
   cameraHeaderLeft: { display: 'flex', alignItems: 'center', gap: '8px' },
   cameraIndicator: {
-    width: '8px',
-    height: '8px',
-    borderRadius: '50%',
-    background: '#ff4444',
-    boxShadow: '0 0 6px #ff4444',
+    width: '8px', height: '8px', borderRadius: '50%',
+    background: '#ff4444', boxShadow: '0 0 6px #ff4444',
   },
-  cameraHeaderTitle: {
-    fontSize: '0.85rem',
-    fontWeight: '600',
-    color: 'white',
-    letterSpacing: '0.3px',
-  },
+  cameraHeaderTitle: { fontSize: '0.85rem', fontWeight: '600', color: 'white' },
   cameraCloseBtn: {
-    background: 'transparent',
-    border: 'none',
-    color: '#aaa',
-    cursor: 'pointer',
-    padding: '4px',
-    display: 'flex',
-    alignItems: 'center',
-    borderRadius: '4px',
+    background: 'transparent', border: 'none', color: '#aaa',
+    cursor: 'pointer', padding: '4px',
+    display: 'flex', alignItems: 'center', borderRadius: '4px',
   },
   cameraViewport: {
-    position: 'relative',
-    width: '100%',
-    aspectRatio: '16/9',
-    background: '#000',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
+    position: 'relative', width: '100%', aspectRatio: '16/9',
+    background: '#000', display: 'flex',
+    alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
   },
-  video: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    display: 'block',
-  },
+  video: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
   guideOverlay: {
-    position: 'absolute',
-    inset: 0,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    pointerEvents: 'none',
+    position: 'absolute', inset: 0,
+    display: 'flex', flexDirection: 'column',
+    alignItems: 'center', justifyContent: 'center', pointerEvents: 'none',
   },
-  guideFrame: {
-    position: 'relative',
-    width: '55%',
-    aspectRatio: '1',
-  },
+  guideFrame: { position: 'relative', width: '55%', aspectRatio: '1' },
   guideCorner: {
-    position: 'absolute',
-    width: '24px',
-    height: '24px',
-    border: '3px solid rgba(255,255,255,0.8)',
-    display: 'block',
+    position: 'absolute', width: '24px', height: '24px',
+    border: '3px solid rgba(255,255,255,0.8)', display: 'block',
   },
   guideHint: {
-    marginTop: '16px',
-    fontSize: '0.78rem',
-    color: 'rgba(255,255,255,0.7)',
-    background: 'rgba(0,0,0,0.4)',
-    padding: '4px 12px',
-    borderRadius: '20px',
-    letterSpacing: '0.3px',
+    marginTop: '16px', fontSize: '0.78rem',
+    color: 'rgba(255,255,255,0.7)', background: 'rgba(0,0,0,0.4)',
+    padding: '4px 12px', borderRadius: '20px',
   },
   cameraErrorState: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '14px',
-    padding: '40px',
-    textAlign: 'center',
+    display: 'flex', flexDirection: 'column',
+    alignItems: 'center', gap: '14px',
+    padding: '40px', textAlign: 'center',
   },
   cameraErrorIcon: {
-    width: '64px',
-    height: '64px',
-    background: '#1a0000',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: '64px', height: '64px', background: '#1a0000',
+    borderRadius: '50%', display: 'flex',
+    alignItems: 'center', justifyContent: 'center',
   },
-  cameraErrorText: {
-    fontSize: '0.88rem',
-    color: '#ffaaaa',
-    maxWidth: '320px',
-    lineHeight: '1.6',
-    margin: 0,
-  },
+  cameraErrorText: { fontSize: '0.88rem', color: '#ffaaaa', maxWidth: '320px', lineHeight: '1.6', margin: 0 },
   retryBtn: {
-    background: '#2d6a2d',
-    color: 'white',
-    border: 'none',
-    padding: '9px 24px',
-    borderRadius: '8px',
-    fontSize: '0.85rem',
-    fontWeight: '600',
-    cursor: 'pointer',
+    background: '#2d6a2d', color: 'white', border: 'none',
+    padding: '9px 24px', borderRadius: '8px',
+    fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer',
   },
   cameraControls: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '20px 40px',
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     background: '#1a1a1a',
   },
   flipBtn: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '5px',
-    background: 'transparent',
-    border: 'none',
-    color: '#ccc',
-    cursor: 'pointer',
-    fontSize: '0.72rem',
-    fontWeight: '600',
-    letterSpacing: '0.3px',
+    display: 'flex', flexDirection: 'column', alignItems: 'center',
+    gap: '5px', background: 'transparent', border: 'none',
+    color: '#ccc', cursor: 'pointer',
+    fontSize: '0.72rem', fontWeight: '600',
   },
   captureBtn: {
-    width: '68px',
-    height: '68px',
-    borderRadius: '50%',
-    background: 'white',
-    border: '4px solid rgba(255,255,255,0.3)',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 0,
+    width: '68px', height: '68px', borderRadius: '50%',
+    background: 'white', border: '4px solid rgba(255,255,255,0.3)',
+    cursor: 'pointer', display: 'flex',
+    alignItems: 'center', justifyContent: 'center', padding: 0,
   },
   captureBtnInner: {
-    width: '52px',
-    height: '52px',
-    borderRadius: '50%',
-    background: 'white',
-    border: '2px solid #ccc',
+    width: '52px', height: '52px', borderRadius: '50%',
+    background: 'white', border: '2px solid #ccc',
   },
   cancelCameraBtn: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '5px',
-    background: 'transparent',
-    border: 'none',
-    color: '#ccc',
-    cursor: 'pointer',
-    fontSize: '0.72rem',
-    fontWeight: '600',
-    letterSpacing: '0.3px',
+    display: 'flex', flexDirection: 'column', alignItems: 'center',
+    gap: '5px', background: 'transparent', border: 'none',
+    color: '#ccc', cursor: 'pointer',
+    fontSize: '0.72rem', fontWeight: '600',
   },
-
-  // Header
   header: {
     background: 'linear-gradient(135deg, #1a3d1a 0%, #2d6a2d 100%)',
-    padding: '60px 60px 50px',
   },
   headerInner: { maxWidth: '1100px', margin: '0 auto' },
   titleRow: { display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '16px' },
   titleBar: { width: '5px', height: '42px', background: '#f5a623', borderRadius: '4px', flexShrink: 0 },
   title: {
-    fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)',
-    fontWeight: '800',
-    color: 'white',
-    margin: 0,
-    letterSpacing: '-0.3px',
+    fontSize: 'clamp(1.5rem, 3.5vw, 2.8rem)',
+    fontWeight: '800', color: 'white', margin: 0,
   },
   subtitle: {
-    fontSize: '1rem',
-    color: 'rgba(255,255,255,0.8)',
-    maxWidth: '620px',
-    lineHeight: '1.7',
-    margin: 0,
+    fontSize: '1rem', color: 'rgba(255,255,255,0.8)',
+    maxWidth: '620px', lineHeight: '1.7', margin: 0,
   },
-
-  // Content
-  content: { maxWidth: '1100px', margin: '40px auto 0', padding: '0 40px' },
-  twoCol: {
-    display: 'grid',
-    gridTemplateColumns: '1.3fr 1fr',
-    gap: '40px',
-    alignItems: 'start',
-  },
+  content: { maxWidth: '1100px', margin: '40px auto 0' },
+  twoCol: { display: 'grid', alignItems: 'start' },
   leftCol: { display: 'flex', flexDirection: 'column', gap: '16px' },
   rightCol: { display: 'flex', flexDirection: 'column', gap: '16px' },
   sectionLabel: {
-    fontSize: '0.72rem',
-    fontWeight: '700',
-    color: '#2d6a2d',
-    textTransform: 'uppercase',
-    letterSpacing: '1px',
-    margin: '0 0 8px',
+    fontSize: '0.72rem', fontWeight: '700', color: '#2d6a2d',
+    textTransform: 'uppercase', letterSpacing: '1px', margin: '0 0 8px',
   },
-
-  // Method tabs
-  methodTabs: {
-    display: 'flex',
-    gap: '10px',
-    marginBottom: '4px',
-  },
+  methodTabs: { display: 'flex', gap: '10px', marginBottom: '4px', flexWrap: 'wrap' },
   methodTab: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '7px',
-    padding: '9px 18px',
-    borderRadius: '8px',
-    border: '1px solid #c8dfc8',
-    background: 'white',
-    color: '#2d6a2d',
-    fontSize: '0.85rem',
-    fontWeight: '600',
-    cursor: 'pointer',
-    transition: 'all 0.2s',
+    display: 'flex', alignItems: 'center', gap: '7px',
+    padding: '9px 18px', borderRadius: '8px',
+    border: '1px solid #c8dfc8', background: 'white',
+    color: '#2d6a2d', fontSize: '0.85rem',
+    fontWeight: '600', cursor: 'pointer',
   },
-
-  // Upload card
   uploadCard: {
-    background: 'white',
-    borderRadius: '12px',
-    border: '2px dashed',
-    transition: 'all 0.3s ease',
+    background: 'white', borderRadius: '12px',
+    border: '2px dashed', transition: 'all 0.3s ease',
     boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-    overflow: 'hidden',
-    minHeight: '380px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    overflow: 'hidden', display: 'flex',
+    alignItems: 'center', justifyContent: 'center',
   },
-  uploadInner: { textAlign: 'center', padding: '50px 40px', width: '100%' },
+  uploadInner: { textAlign: 'center', width: '100%' },
   uploadIconBox: {
-    width: '100px',
-    height: '100px',
-    background: '#f0faf0',
-    border: '1px solid #c8e6c9',
-    borderRadius: '16px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: '0 auto 24px',
+    width: '80px', height: '80px', background: '#f0faf0',
+    border: '1px solid #c8e6c9', borderRadius: '16px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    margin: '0 auto 20px',
   },
-  uploadTitle: { fontSize: '1.3rem', fontWeight: '700', color: '#1a3d1a', marginBottom: '10px' },
-  uploadSub: { fontSize: '0.9rem', color: '#888', marginBottom: '28px' },
+  uploadTitle: { fontSize: '1.1rem', fontWeight: '700', color: '#1a3d1a', marginBottom: '8px' },
+  uploadSub: { fontSize: '0.88rem', color: '#888', marginBottom: '20px' },
   divider: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    marginBottom: '28px',
-    maxWidth: '300px',
-    margin: '0 auto 28px',
+    display: 'flex', alignItems: 'center', gap: '12px',
+    maxWidth: '280px', margin: '0 auto 20px',
   },
   dividerLine: { flex: 1, height: '1px', background: '#e0e0e0', display: 'block' },
   dividerText: { color: '#aaa', fontSize: '0.85rem' },
   uploadBtnRow: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '12px',
-    flexWrap: 'wrap',
+    display: 'flex', alignItems: 'center',
+    justifyContent: 'center', gap: '10px', flexWrap: 'wrap',
   },
   chooseBtn: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '7px',
-    background: '#2d6a2d',
-    color: 'white',
-    padding: '12px 32px',
-    borderRadius: '8px',
-    fontWeight: '600',
-    fontSize: '0.95rem',
-    cursor: 'pointer',
+    display: 'inline-flex', alignItems: 'center', gap: '7px',
+    background: '#2d6a2d', color: 'white',
+    padding: '11px 28px', borderRadius: '8px',
+    fontWeight: '600', fontSize: '0.92rem', cursor: 'pointer',
   },
   cameraBtn: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '7px',
-    background: 'white',
-    color: '#2d6a2d',
-    padding: '12px 24px',
-    borderRadius: '8px',
-    fontWeight: '600',
-    fontSize: '0.95rem',
-    cursor: 'pointer',
-    border: '1.5px solid #2d6a2d',
+    display: 'inline-flex', alignItems: 'center', gap: '7px',
+    background: 'white', color: '#2d6a2d',
+    padding: '11px 20px', borderRadius: '8px',
+    fontWeight: '600', fontSize: '0.92rem',
+    cursor: 'pointer', border: '1.5px solid #2d6a2d',
   },
-
-  // Preview
   previewContainer: { width: '100%' },
-  preview: { width: '100%', maxHeight: '340px', objectFit: 'contain', display: 'block' },
+  preview: { width: '100%', maxHeight: '320px', objectFit: 'contain', display: 'block' },
   previewOverlay: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '12px 16px',
-    background: '#f4faf4',
-    borderTop: '1px solid #e0ece0',
-    flexWrap: 'wrap',
-    gap: '8px',
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '10px 14px', background: '#f4faf4',
+    borderTop: '1px solid #e0ece0', flexWrap: 'wrap', gap: '8px',
   },
   fileInfo: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' },
   capturedBadge: {
-    background: '#e8f5e9',
-    color: '#2d6a2d',
-    border: '1px solid #c8e6c9',
-    padding: '2px 8px',
-    borderRadius: '4px',
-    fontSize: '0.75rem',
-    fontWeight: '700',
+    background: '#e8f5e9', color: '#2d6a2d',
+    border: '1px solid #c8e6c9', padding: '2px 8px',
+    borderRadius: '4px', fontSize: '0.75rem', fontWeight: '700',
   },
   fileName: {
-    fontSize: '0.82rem',
-    color: '#555',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    maxWidth: '180px',
+    fontSize: '0.82rem', color: '#555',
+    overflow: 'hidden', textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap', maxWidth: '160px',
   },
   previewActions: { display: 'flex', gap: '8px' },
   retakeBtn: {
-    background: 'transparent',
-    color: '#2d6a2d',
-    border: '1px solid #2d6a2d',
-    padding: '5px 12px',
-    borderRadius: '6px',
-    fontSize: '0.82rem',
-    cursor: 'pointer',
-    fontWeight: '600',
+    background: 'transparent', color: '#2d6a2d',
+    border: '1px solid #2d6a2d', padding: '5px 10px',
+    borderRadius: '6px', fontSize: '0.82rem',
+    cursor: 'pointer', fontWeight: '600',
   },
   reuploadBtn: {
-    background: 'transparent',
-    color: '#555',
-    border: '1px solid #ccc',
-    padding: '5px 12px',
-    borderRadius: '6px',
-    fontSize: '0.82rem',
-    cursor: 'pointer',
-    fontWeight: '600',
+    background: 'transparent', color: '#555',
+    border: '1px solid #ccc', padding: '5px 10px',
+    borderRadius: '6px', fontSize: '0.82rem',
+    cursor: 'pointer', fontWeight: '600',
   },
-
-  // Analyze button
   analyzeBtn: {
     width: '100%',
     background: 'linear-gradient(135deg, #1a3d1a, #2d6a2d)',
-    color: 'white',
-    border: 'none',
-    padding: '16px',
-    borderRadius: '10px',
-    fontSize: '1.05rem',
-    fontWeight: '700',
-    letterSpacing: '0.5px',
+    color: 'white', border: 'none', padding: '16px',
+    borderRadius: '10px', fontSize: '1.05rem',
+    fontWeight: '700', letterSpacing: '0.5px',
     boxShadow: '0 4px 16px rgba(45,106,45,0.3)',
   },
   analyzingInner: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' },
   spinner: {
-    width: '16px',
-    height: '16px',
+    width: '16px', height: '16px',
     border: '2px solid rgba(255,255,255,0.3)',
-    borderTop: '2px solid white',
-    borderRadius: '50%',
-    display: 'inline-block',
-    animation: 'spin 0.8s linear infinite',
+    borderTop: '2px solid white', borderRadius: '50%',
+    display: 'inline-block', animation: 'spin 0.8s linear infinite',
   },
-
-  // Error / Result
   errorBox: {
-    background: '#fff5f5',
-    border: '1px solid #ffcccc',
-    borderLeft: '4px solid #e53e3e',
-    borderRadius: '8px',
-    padding: '12px 16px',
+    background: '#fff5f5', border: '1px solid #ffcccc',
+    borderLeft: '4px solid #e53e3e', borderRadius: '8px', padding: '12px 16px',
   },
   errorText: { fontSize: '0.85rem', color: '#c53030', margin: 0 },
   resultBox: {
-    background: 'white',
-    border: '1px solid #deeede',
-    borderRadius: '12px',
-    padding: '20px 22px',
+    background: 'white', border: '1px solid #deeede',
+    borderRadius: '12px', padding: '20px 22px',
     boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
   },
   resultLabel: {
-    fontSize: '0.72rem',
-    fontWeight: '700',
-    color: '#2d6a2d',
-    textTransform: 'uppercase',
-    letterSpacing: '1px',
-    marginBottom: '14px',
+    fontSize: '0.72rem', fontWeight: '700', color: '#2d6a2d',
+    textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '14px',
   },
   resultRow: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: '10px',
+    display: 'flex', alignItems: 'center',
+    justifyContent: 'space-between', marginBottom: '10px',
   },
   resultKey: { fontSize: '0.82rem', fontWeight: '700', color: '#555', margin: '0 0 6px' },
   resultValue: { fontSize: '0.85rem', color: '#333', maxWidth: '60%', textAlign: 'right' },
   resultBadge: {
-    background: '#f0faf0',
-    border: '1px solid #c8e6c9',
-    color: '#2d6a2d',
-    padding: '3px 10px',
-    borderRadius: '4px',
-    fontSize: '0.78rem',
-    fontWeight: '700',
+    background: '#f0faf0', border: '1px solid #c8e6c9',
+    color: '#2d6a2d', padding: '3px 10px',
+    borderRadius: '4px', fontSize: '0.78rem', fontWeight: '700',
   },
   resultDivider: { height: '1px', background: '#f0f0f0', margin: '12px 0' },
   resultTreatment: { fontSize: '0.85rem', color: '#444', lineHeight: '1.6', margin: '0 0 12px' },
-
-  // Guidelines
   guideList: { display: 'flex', flexDirection: 'column', gap: '12px' },
   guideItem: {
-    display: 'flex',
-    gap: '16px',
-    alignItems: 'flex-start',
-    background: 'white',
-    border: '1px solid #deeede',
-    borderRadius: '10px',
-    padding: '16px 18px',
+    display: 'flex', gap: '16px', alignItems: 'flex-start',
+    background: 'white', border: '1px solid #deeede',
+    borderRadius: '10px', padding: '14px 16px',
   },
   guideLeft: { flexShrink: 0, paddingTop: '2px' },
   guideNum: {
-    fontSize: '0.7rem',
-    fontWeight: '800',
-    color: '#2d6a2d',
-    background: '#f0faf0',
-    border: '1px solid #c8e6c9',
-    padding: '4px 8px',
-    borderRadius: '4px',
-    letterSpacing: '0.5px',
-    display: 'block',
+    fontSize: '0.7rem', fontWeight: '800', color: '#2d6a2d',
+    background: '#f0faf0', border: '1px solid #c8e6c9',
+    padding: '4px 8px', borderRadius: '4px',
+    letterSpacing: '0.5px', display: 'block',
   },
   guideTitle: { fontSize: '0.92rem', fontWeight: '700', color: '#1a3d1a', margin: '0 0 4px' },
   guideText: { fontSize: '0.85rem', color: '#555', lineHeight: '1.6', margin: 0 },
   noteBox: {
-    background: '#fffbf0',
-    border: '1px solid #f5e6b8',
-    borderLeft: '4px solid #f5a623',
-    borderRadius: '8px',
-    padding: '14px 16px',
+    background: '#fffbf0', border: '1px solid #f5e6b8',
+    borderLeft: '4px solid #f5a623', borderRadius: '8px', padding: '14px 16px',
   },
   noteText: { fontSize: '0.85rem', color: '#555', lineHeight: '1.6', margin: 0 },
-
-  // Tip lists
   tipList: {
-    listStyle: 'none',
-    padding: 0,
-    margin: '0 0 12px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
+    listStyle: 'none', padding: 0, margin: '0 0 12px',
+    display: 'flex', flexDirection: 'column', gap: '8px',
   },
   tipItem: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    gap: '10px',
-    background: '#f8fdf8',
-    border: '1px solid #e0ece0',
-    borderRadius: '8px',
-    padding: '10px 12px',
+    display: 'flex', alignItems: 'flex-start', gap: '10px',
+    background: '#f8fdf8', border: '1px solid #e0ece0',
+    borderRadius: '8px', padding: '10px 12px',
   },
   tipNumber: {
-    flexShrink: 0,
-    width: '22px',
-    height: '22px',
-    background: '#2d6a2d',
-    color: 'white',
-    borderRadius: '50%',
-    fontSize: '0.72rem',
-    fontWeight: '800',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexShrink: 0, width: '22px', height: '22px',
+    background: '#2d6a2d', color: 'white', borderRadius: '50%',
+    fontSize: '0.72rem', fontWeight: '800',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  tipText: {
-    fontSize: '0.85rem',
-    color: '#333',
-    lineHeight: '1.55',
-  },
+  tipText: { fontSize: '0.85rem', color: '#333', lineHeight: '1.55' },
   buyList: {
-    listStyle: 'none',
-    padding: 0,
-    margin: '0 0 12px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '6px',
+    listStyle: 'none', padding: 0, margin: '0 0 12px',
+    display: 'flex', flexDirection: 'column', gap: '6px',
   },
-  buyItem: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    gap: '8px',
-  },
-  buyDot: {
-    color: '#2d6a2d',
-    fontWeight: '800',
-    fontSize: '1rem',
-    flexShrink: 0,
-    lineHeight: '1.4',
-  },
+  buyItem: { display: 'flex', alignItems: 'flex-start', gap: '8px' },
+  buyDot: { color: '#2d6a2d', fontWeight: '800', fontSize: '1rem', flexShrink: 0, lineHeight: '1.4' },
   storeBox: {
-    background: '#fffbf0',
-    border: '1px solid #f5e6b8',
-    borderLeft: '4px solid #f5a623',
-    borderRadius: '8px',
-    padding: '12px 14px',
-    margin: '10px 0',
+    background: '#fffbf0', border: '1px solid #f5e6b8',
+    borderLeft: '4px solid #f5a623', borderRadius: '8px',
+    padding: '12px 14px', margin: '10px 0',
   },
-  storeLabel: {
-    fontSize: '0.78rem',
-    fontWeight: '700',
-    color: '#b07d00',
-    margin: '0 0 4px',
-  },
-  storeText: {
-    fontSize: '0.88rem',
-    color: '#444',
-    lineHeight: '1.55',
-    margin: 0,
-    fontStyle: 'italic',
-  },
+  storeLabel: { fontSize: '0.78rem', fontWeight: '700', color: '#b07d00', margin: '0 0 4px' },
+  storeText: { fontSize: '0.88rem', color: '#444', lineHeight: '1.55', margin: 0, fontStyle: 'italic' },
 };
 
-// Inject spinner keyframe
 const styleTag = document.createElement('style');
 styleTag.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
 document.head.appendChild(styleTag);

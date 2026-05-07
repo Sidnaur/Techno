@@ -1,47 +1,67 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const Footer = () => (
-  <footer style={styles.footer}>
-    <div style={styles.container}>
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+  return isMobile;
+};
 
-      {/* Brand */}
-      <div>
-        <div style={styles.logo}>
-          🌿 <span style={styles.logoText}>AgriVision</span>
+const Footer = () => {
+  const isMobile = useIsMobile();
+
+  return (
+    <footer style={styles.footer}>
+      <div style={{
+        ...styles.container,
+        padding: isMobile ? '40px 24px' : '48px 40px',
+        gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: isMobile ? '28px' : '32px',
+      }}>
+
+        {/* Brand */}
+        <div>
+          <div style={styles.logo}>
+            🌿 <span style={styles.logoText}>AgriVision</span>
+          </div>
+          <p style={styles.description}>
+            AI-powered plant disease detection for all types of crops. Helping farmers protect their harvests.
+          </p>
         </div>
-        <p style={styles.description}>
-          AI-powered plant disease detection for all types of crops. Helping farmers protect their harvests.
-        </p>
+
+        {/* Quick Links */}
+        <div>
+          <h4 style={styles.heading}>Quick Links</h4>
+          <div style={styles.linkGroup}>
+            <Link to="/" style={styles.link}>Home</Link>
+            <Link to="/about" style={styles.link}>About</Link>
+            <Link to="/detect" style={styles.link}>Detect Disease</Link>
+            <Link to="/diseases" style={styles.link}>Plant Diseases</Link>
+            <Link to="/blog" style={styles.link}>Blog</Link>
+          </div>
+        </div>
+
+        {/* Contact */}
+        <div>
+          <h4 style={styles.heading}>Contact</h4>
+          <div style={styles.linkGroup}>
+            <div style={styles.contactItem}>📧 support@agrivision.app</div>
+            <div style={styles.contactItem}>📍 Smart Farming Solutions</div>
+          </div>
+        </div>
+
       </div>
 
-      {/* Quick Links */}
-      <div>
-        <h4 style={styles.heading}>Quick Links</h4>
-        <div style={styles.linkGroup}>
-          <Link to="/" style={styles.link}>Home</Link>
-          <Link to="/about" style={styles.link}>About</Link>
-          <Link to="/detect" style={styles.link}>Detect Disease</Link>
-          <Link to="/diseases" style={styles.link}>Plant Diseases</Link>
-          <Link to="/blog" style={styles.link}>Blog</Link>
-        </div>
+      <div style={styles.bottom}>
+        © {new Date().getFullYear()} AgriVision. All rights reserved.
       </div>
-
-      {/* Contact */}
-      <div>
-        <h4 style={styles.heading}>Contact</h4>
-        <div style={styles.linkGroup}>
-          <div style={styles.contactItem}>📧 support@agrivision.app</div>
-          <div style={styles.contactItem}>📍 Smart Farming Solutions</div>
-        </div>
-      </div>
-
-    </div>
-
-    <div style={styles.bottom}>
-      © {new Date().getFullYear()} AgriVision. All rights reserved.
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};
 
 const styles = {
   footer: {
@@ -52,10 +72,7 @@ const styles = {
   container: {
     maxWidth: "1100px",
     margin: "0 auto",
-    padding: "48px 40px",
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-    gap: "32px",
   },
   logo: {
     display: "flex",
@@ -65,9 +82,7 @@ const styles = {
     fontWeight: "bold",
     marginBottom: "12px",
   },
-  logoText: {
-    fontSize: "1.2rem",
-  },
+  logoText: { fontSize: "1.2rem" },
   description: {
     fontSize: "0.875rem",
     color: "rgba(255,255,255,0.75)",

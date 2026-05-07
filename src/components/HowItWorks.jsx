@@ -1,9 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+  return isMobile;
+};
 
 const HowItWorks = () => {
   const [activeStep, setActiveStep] = useState(null);
   const { t } = useLanguage();
+  const isMobile = useIsMobile();
 
   const steps = [
     {
@@ -36,11 +47,17 @@ const HowItWorks = () => {
   ];
 
   return (
-    <section style={styles.section}>
+    <section style={{
+      ...styles.section,
+      padding: isMobile ? '48px 20px' : '40px 40px 40px',
+    }}>
       <div style={styles.bgCircle1} />
       <div style={styles.bgCircle2} />
 
-      <div style={styles.header}>
+      <div style={{
+        ...styles.header,
+        marginBottom: isMobile ? '40px' : '64px',
+      }}>
         <div style={styles.badge}>⚡ {t('hiw_badge')}</div>
         <h2 style={styles.heading}>
           {t('hiw_heading')} <span style={styles.headingAccent}>{t('hiw_heading_accent')}</span>
@@ -49,8 +66,14 @@ const HowItWorks = () => {
       </div>
 
       <div style={styles.stepsContainer}>
-        <div style={styles.connectorLine} />
-        <div style={styles.grid}>
+        {/* Hide connector line on mobile — it doesn't make sense when stacked */}
+        {!isMobile && <div style={styles.connectorLine} />}
+
+        <div style={{
+          ...styles.grid,
+          gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: isMobile ? '16px' : '28px',
+        }}>
           {steps.map((step, index) => (
             <div
               key={index}
@@ -61,9 +84,13 @@ const HowItWorks = () => {
                 boxShadow: activeStep === index
                   ? `0 20px 60px ${step.lightColor}, 0 0 0 2px ${step.color}`
                   : '0 4px 24px rgba(0,0,0,0.08)',
+                padding: isMobile ? '28px 20px 24px' : '40px 28px 32px',
+                // On mobile show detail always, not just on hover
+                ...(isMobile && { cursor: 'default' }),
               }}
-              onMouseEnter={() => setActiveStep(index)}
-              onMouseLeave={() => setActiveStep(null)}
+              onMouseEnter={() => !isMobile && setActiveStep(index)}
+              onMouseLeave={() => !isMobile && setActiveStep(null)}
+              onClick={() => isMobile && setActiveStep(activeStep === index ? null : index)}
             >
               <div style={{ ...styles.stepNumber, color: step.color }}>{step.number}</div>
               <div style={{ ...styles.iconCircle, background: step.lightColor, boxShadow: `0 8px 24px ${step.lightColor}` }}>
@@ -74,7 +101,7 @@ const HowItWorks = () => {
               <div style={{
                 ...styles.detail,
                 opacity: activeStep === index ? 1 : 0,
-                maxHeight: activeStep === index ? '60px' : '0',
+                maxHeight: activeStep === index ? '80px' : '0',
                 transition: 'all 0.3s ease',
               }}>
                 <p style={styles.detailText}>💡 {step.detail}</p>
@@ -92,11 +119,9 @@ const HowItWorks = () => {
   );
 };
 
-// styles — completely unchanged
 const styles = {
   section: {
     background: 'white',
-    padding: '40px 40px 40px',
     textAlign: 'center',
     maxWidth: '100%',
     position: 'relative',
@@ -114,7 +139,7 @@ const styles = {
     background: 'radial-gradient(circle, rgba(76,175,80,0.06) 0%, transparent 70%)',
     pointerEvents: 'none',
   },
-  header: { marginBottom: '64px', position: 'relative', zIndex: 1 },
+  header: { position: 'relative', zIndex: 1 },
   badge: {
     display: 'inline-block',
     background: 'rgba(45,106,45,0.1)',
@@ -127,7 +152,7 @@ const styles = {
     border: '1px solid rgba(45,106,45,0.2)',
   },
   heading: {
-    fontSize: 'clamp(2rem, 4vw, 3rem)',
+    fontSize: 'clamp(1.6rem, 4vw, 3rem)',
     fontWeight: '900',
     color: '#1a3d1a',
     marginBottom: '12px',
@@ -154,15 +179,12 @@ const styles = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-    gap: '28px',
     position: 'relative',
     zIndex: 1,
   },
   card: {
     background: 'white',
     borderRadius: '24px',
-    padding: '40px 28px 32px',
     textAlign: 'center',
     border: '2px solid transparent',
     transition: 'all 0.3s ease',

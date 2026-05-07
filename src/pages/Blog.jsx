@@ -1,8 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import tomatoImg from '../assets/TOMATO LEAF Fragrance Oil Choose Your Size - Etsy.jpg';
 import chiliImg from '../assets/chilly.jpg';
 import eggplantImg from '../assets/African Eggplant, Nya Nya Chungu (Solanum aethiopicum) - Medium Coconut Coir Pot.jpg';
+
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+  return isMobile;
+};
 
 const posts = [
   {
@@ -66,27 +76,28 @@ const posts = [
 
 const Blog = () => {
   const { t } = useLanguage();
+  const isMobile = useIsMobile();
   const [activePost, setActivePost] = useState(null);
   const [activeCategory, setActiveCategory] = useState('All');
 
   const categories = ['All', 'Disease Management', 'Sustainable Farming', 'Plant Science'];
+  const filtered = posts.filter(p => activeCategory === 'All' || p.category === activeCategory);
 
-  const filtered = posts.filter(p =>
-    activeCategory === 'All' || p.category === activeCategory
-  );
-
+  // Article view
   if (activePost) {
     const post = posts.find(p => p.id === activePost);
     return (
       <div style={styles.page}>
-        <div style={styles.header}>
+        <div style={{ ...styles.header, padding: isMobile ? '32px 24px' : '60px 60px 50px' }}>
           <div style={styles.headerInner}>
             <button onClick={() => setActivePost(null)} style={styles.backBtn}>
               {t('blog_back')}
             </button>
             <div style={styles.titleRow}>
               <div style={styles.titleBar} />
-              <h1 style={styles.title}>{post.title}</h1>
+              <h1 style={{ ...styles.title, fontSize: isMobile ? 'clamp(1.2rem, 5vw, 1.8rem)' : 'clamp(1.8rem, 3.5vw, 2.8rem)' }}>
+                {post.title}
+              </h1>
             </div>
             <div style={styles.postMeta}>
               <span style={styles.categoryTag}>{post.category}</span>
@@ -98,11 +109,9 @@ const Blog = () => {
           </div>
         </div>
 
-        <div style={styles.articleBody}>
+        <div style={{ ...styles.articleBody, padding: isMobile ? '24px 16px 60px' : '48px 40px 80px' }}>
           <div style={styles.articleInner}>
             <img src={post.image} alt={post.title} style={styles.articleImage} />
-
-            {/* Author */}
             <div style={styles.authorBox}>
               <div style={styles.authorAvatar}>
                 {post.author.split(' ').map(n => n[0]).join('').slice(0, 2)}
@@ -112,13 +121,9 @@ const Blog = () => {
                 <p style={styles.authorTitle}>{post.authorTitle}</p>
               </div>
             </div>
-
-            {/* Content */}
             {post.content.map((para, i) => (
               <p key={i} style={styles.articlePara}>{para}</p>
             ))}
-
-            {/* Citation */}
             <div style={styles.citationBox}>
               <p style={styles.citationLabel}>{t('blog_source_label')}</p>
               <p style={styles.citationText}>
@@ -127,9 +132,7 @@ const Blog = () => {
                   {t('blog_view_publication')}
                 </a>
               </p>
-              <p style={styles.citationDisclaimer}>
-                {t('blog_disclaimer')}
-              </p>
+              <p style={styles.citationDisclaimer}>{t('blog_disclaimer')}</p>
             </div>
           </div>
         </div>
@@ -137,28 +140,30 @@ const Blog = () => {
     );
   }
 
+  // List view
   return (
     <div style={styles.page}>
-      {/* Header */}
-      <div style={styles.header}>
+      <div style={{ ...styles.header, padding: isMobile ? '40px 24px 32px' : '60px 60px 50px' }}>
         <div style={styles.headerInner}>
           <div style={styles.titleRow}>
             <div style={styles.titleBar} />
             <h1 style={styles.title}>{t('blog_title')}</h1>
           </div>
-          <p style={styles.subtitle}>
-            {t('blog_subtitle')}
-          </p>
+          <p style={styles.subtitle}>{t('blog_subtitle')}</p>
         </div>
       </div>
 
-      {/* Body */}
-      <div style={styles.body}>
+      <div style={{ ...styles.body, padding: isMobile ? '24px 16px 60px' : '40px 40px 80px' }}>
 
         {/* Filter */}
-        <div style={styles.filterRow}>
+        <div style={{
+          ...styles.filterRow,
+          flexDirection: isMobile ? 'column' : 'row',
+          alignItems: isMobile ? 'flex-start' : 'center',
+          gap: isMobile ? '10px' : '16px',
+        }}>
           <span style={styles.filterLabel}>{t('blog_filter_label')}</span>
-          <div style={styles.filterGroup}>
+          <div style={{ ...styles.filterGroup, flexWrap: 'wrap' }}>
             {categories.map(c => (
               <button
                 key={c}
@@ -171,8 +176,11 @@ const Blog = () => {
           </div>
         </div>
 
-        {/* Posts */}
-        <div style={styles.grid}>
+        {/* Posts grid */}
+        <div style={{
+          ...styles.grid,
+          gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(320px, 1fr))',
+        }}>
           {filtered.map((post) => (
             <div key={post.id} style={styles.card}>
               <div style={styles.cardImageWrapper}>
@@ -187,8 +195,6 @@ const Blog = () => {
                 </div>
                 <h2 style={styles.cardTitle}>{post.title}</h2>
                 <p style={styles.cardExcerpt}>{post.excerpt}</p>
-
-                {/* Author */}
                 <div style={styles.cardAuthor}>
                   <div style={styles.cardAvatar}>
                     {post.author.split(' ').map(n => n[0]).join('').slice(0, 2)}
@@ -198,7 +204,6 @@ const Blog = () => {
                     <p style={styles.cardAuthorTitle}>{post.authorTitle}</p>
                   </div>
                 </div>
-
                 <div style={styles.cardFooter}>
                   <div style={styles.sourceTag}>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2d6a2d" strokeWidth="2">
@@ -207,10 +212,7 @@ const Blog = () => {
                     </svg>
                     <span style={styles.sourceTagText}>{t('blog_scopus_indexed')}</span>
                   </div>
-                  <button
-                    style={styles.readMoreBtn}
-                    onClick={() => setActivePost(post.id)}
-                  >
+                  <button style={styles.readMoreBtn} onClick={() => setActivePost(post.id)}>
                     {t('blog_read_article')}
                   </button>
                 </div>
@@ -219,11 +221,8 @@ const Blog = () => {
           ))}
         </div>
 
-        {/* Disclaimer */}
         <div style={styles.disclaimer}>
-          <p style={styles.disclaimerText}>
-            {t('blog_disclaimer')}
-          </p>
+          <p style={styles.disclaimerText}>{t('blog_disclaimer')}</p>
         </div>
       </div>
     </div>
@@ -234,45 +233,21 @@ const styles = {
   page: { minHeight: '100vh', background: '#f4f9f4' },
   header: {
     background: 'linear-gradient(135deg, #1a3d1a 0%, #2d6a2d 100%)',
-    padding: '60px 60px 50px',
   },
   headerInner: { maxWidth: '1100px', margin: '0 auto' },
   backBtn: {
-    background: 'transparent',
-    border: '1px solid rgba(255,255,255,0.3)',
-    color: 'rgba(255,255,255,0.8)',
-    padding: '6px 14px',
-    borderRadius: '6px',
-    cursor: 'pointer',
-    fontSize: '0.85rem',
-    marginBottom: '20px',
-    fontWeight: '500',
+    background: 'transparent', border: '1px solid rgba(255,255,255,0.3)',
+    color: 'rgba(255,255,255,0.8)', padding: '6px 14px',
+    borderRadius: '6px', cursor: 'pointer',
+    fontSize: '0.85rem', marginBottom: '20px', fontWeight: '500',
   },
-  titleRow: {
-    display: 'flex', alignItems: 'center',
-    gap: '14px', marginBottom: '16px',
-  },
-  titleBar: {
-    width: '5px', height: '42px',
-    background: '#f5a623', borderRadius: '4px', flexShrink: 0,
-  },
-  title: {
-    fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)',
-    fontWeight: '800', color: 'white',
-    margin: 0, letterSpacing: '-0.3px',
-  },
-  subtitle: {
-    fontSize: '1rem',
-    color: 'rgba(255,255,255,0.8)',
-    maxWidth: '600px', lineHeight: '1.7', margin: 0,
-  },
-  postMeta: {
-    display: 'flex', alignItems: 'center',
-    gap: '10px', flexWrap: 'wrap',
-  },
+  titleRow: { display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '16px' },
+  titleBar: { width: '5px', height: '42px', background: '#f5a623', borderRadius: '4px', flexShrink: 0 },
+  title: { fontSize: 'clamp(1.5rem, 3.5vw, 2.8rem)', fontWeight: '800', color: 'white', margin: 0 },
+  subtitle: { fontSize: '1rem', color: 'rgba(255,255,255,0.8)', maxWidth: '600px', lineHeight: '1.7', margin: 0 },
+  postMeta: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' },
   categoryTag: {
-    background: 'rgba(245,166,35,0.2)',
-    color: '#f5a623',
+    background: 'rgba(245,166,35,0.2)', color: '#f5a623',
     border: '1px solid rgba(245,166,35,0.3)',
     padding: '3px 10px', borderRadius: '4px',
     fontSize: '0.75rem', fontWeight: '700',
@@ -280,187 +255,108 @@ const styles = {
   },
   metaDot: { color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem' },
   metaText: { color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem' },
-  body: {
-    maxWidth: '1100px', margin: '0 auto',
-    padding: '40px 40px 80px', boxSizing: 'border-box',
-  },
+  body: { maxWidth: '1100px', margin: '0 auto', boxSizing: 'border-box' },
   filterRow: {
-    display: 'flex', alignItems: 'center',
-    gap: '16px', flexWrap: 'wrap',
+    display: 'flex', flexWrap: 'wrap',
     background: 'white', border: '1px solid #deeede',
-    borderRadius: '10px', padding: '14px 20px',
-    marginBottom: '32px',
+    borderRadius: '10px', padding: '14px 20px', marginBottom: '32px',
   },
   filterLabel: {
-    fontSize: '0.75rem', fontWeight: '700',
-    color: '#888', textTransform: 'uppercase',
-    letterSpacing: '0.5px', whiteSpace: 'nowrap',
+    fontSize: '0.75rem', fontWeight: '700', color: '#888',
+    textTransform: 'uppercase', letterSpacing: '0.5px', whiteSpace: 'nowrap',
   },
-  filterGroup: { display: 'flex', gap: '8px', flexWrap: 'wrap' },
+  filterGroup: { display: 'flex', gap: '8px' },
   filterBtn: {
-    padding: '6px 16px', borderRadius: '6px',
+    padding: '6px 14px', borderRadius: '6px',
     border: '1px solid #d0e8d0', background: 'white',
-    cursor: 'pointer', fontSize: '0.85rem',
-    color: '#555', fontWeight: '500',
+    cursor: 'pointer', fontSize: '0.85rem', color: '#555', fontWeight: '500',
   },
-  filterActive: {
-    background: '#2d6a2d', color: 'white',
-    border: '1px solid #2d6a2d', fontWeight: '600',
-  },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-    gap: '24px', marginBottom: '40px',
-  },
+  filterActive: { background: '#2d6a2d', color: 'white', border: '1px solid #2d6a2d', fontWeight: '600' },
+  grid: { display: 'grid', gap: '24px', marginBottom: '40px' },
   card: {
-    background: 'white', borderRadius: '12px',
-    overflow: 'hidden', border: '1px solid #deeede',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+    background: 'white', borderRadius: '12px', overflow: 'hidden',
+    border: '1px solid #deeede', boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
     display: 'flex', flexDirection: 'column',
   },
-  cardImageWrapper: { position: 'relative', height: '220px', overflow: 'hidden' },
+  cardImageWrapper: { position: 'relative', height: '200px', overflow: 'hidden' },
   cardImage: { width: '100%', height: '100%', objectFit: 'cover' },
   cardCategory: {
     position: 'absolute', top: '12px', left: '12px',
-    background: 'rgba(26,61,26,0.85)',
-    backdropFilter: 'blur(6px)',
-    color: 'white', padding: '4px 10px',
-    borderRadius: '4px', fontSize: '0.72rem',
-    fontWeight: '700', letterSpacing: '0.5px',
-    textTransform: 'uppercase',
+    background: 'rgba(26,61,26,0.85)', backdropFilter: 'blur(6px)',
+    color: 'white', padding: '4px 10px', borderRadius: '4px',
+    fontSize: '0.72rem', fontWeight: '700',
+    letterSpacing: '0.5px', textTransform: 'uppercase',
   },
-  cardBody: {
-    padding: '20px 22px 22px',
-    display: 'flex', flexDirection: 'column', flex: 1,
-  },
-  cardMeta: {
-    display: 'flex', alignItems: 'center',
-    gap: '8px', marginBottom: '10px',
-  },
+  cardBody: { padding: '18px 20px 20px', display: 'flex', flexDirection: 'column', flex: 1 },
+  cardMeta: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' },
   cardDate: { fontSize: '0.78rem', color: '#999' },
-  cardTitle: {
-    fontSize: '1.1rem', fontWeight: '800',
-    color: '#1a3d1a', marginBottom: '10px',
-    lineHeight: '1.4',
-  },
-  cardExcerpt: {
-    fontSize: '0.88rem', color: '#666',
-    lineHeight: '1.65', marginBottom: '16px', flex: 1,
-  },
+  cardTitle: { fontSize: '1.05rem', fontWeight: '800', color: '#1a3d1a', marginBottom: '10px', lineHeight: '1.4' },
+  cardExcerpt: { fontSize: '0.88rem', color: '#666', lineHeight: '1.65', marginBottom: '16px', flex: 1 },
   cardAuthor: {
-    display: 'flex', alignItems: 'center',
-    gap: '10px', marginBottom: '16px',
-    paddingTop: '14px', borderTop: '1px solid #f0f0f0',
+    display: 'flex', alignItems: 'center', gap: '10px',
+    marginBottom: '16px', paddingTop: '14px', borderTop: '1px solid #f0f0f0',
   },
   cardAvatar: {
-    width: '36px', height: '36px',
-    borderRadius: '50%', background: '#e8f5e9',
-    border: '1px solid #c8e6c9',
+    width: '36px', height: '36px', borderRadius: '50%',
+    background: '#e8f5e9', border: '1px solid #c8e6c9',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '0.75rem', fontWeight: '800', color: '#2d6a2d',
-    flexShrink: 0,
+    fontSize: '0.75rem', fontWeight: '800', color: '#2d6a2d', flexShrink: 0,
   },
-  cardAuthorName: {
-    fontSize: '0.85rem', fontWeight: '700',
-    color: '#333', margin: 0,
-  },
-  cardAuthorTitle: {
-    fontSize: '0.75rem', color: '#888',
-    margin: 0, marginTop: '2px',
-  },
-  cardFooter: {
-    display: 'flex', alignItems: 'center',
-    justifyContent: 'space-between',
-  },
+  cardAuthorName: { fontSize: '0.85rem', fontWeight: '700', color: '#333', margin: 0 },
+  cardAuthorTitle: { fontSize: '0.75rem', color: '#888', margin: '2px 0 0' },
+  cardFooter: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
   sourceTag: {
-    display: 'flex', alignItems: 'center',
-    gap: '5px', background: '#f0faf0',
-    border: '1px solid #c8e6c9',
+    display: 'flex', alignItems: 'center', gap: '5px',
+    background: '#f0faf0', border: '1px solid #c8e6c9',
     padding: '4px 10px', borderRadius: '4px',
   },
-  sourceTagText: {
-    fontSize: '0.72rem', fontWeight: '600',
-    color: '#2d6a2d', letterSpacing: '0.3px',
-  },
+  sourceTagText: { fontSize: '0.72rem', fontWeight: '600', color: '#2d6a2d' },
   readMoreBtn: {
-    background: '#1a3d1a', color: 'white',
-    border: 'none', padding: '8px 16px',
-    borderRadius: '6px', fontSize: '0.82rem',
-    fontWeight: '600', cursor: 'pointer',
-    letterSpacing: '0.3px',
+    background: '#1a3d1a', color: 'white', border: 'none',
+    padding: '8px 16px', borderRadius: '6px',
+    fontSize: '0.82rem', fontWeight: '600', cursor: 'pointer',
   },
   disclaimer: {
-    background: '#fffbf0',
-    border: '1px solid #f5e6b8',
-    borderLeft: '4px solid #f5a623',
-    borderRadius: '8px', padding: '16px 20px',
+    background: '#fffbf0', border: '1px solid #f5e6b8',
+    borderLeft: '4px solid #f5a623', borderRadius: '8px', padding: '16px 20px',
   },
-  disclaimerText: {
-    fontSize: '0.82rem', color: '#666',
-    lineHeight: '1.6', margin: 0, fontStyle: 'italic',
-  },
-
-  // Article view
-  articleBody: {
-    maxWidth: '780px', margin: '0 auto',
-    padding: '48px 40px 80px',
-  },
-  articleInner: { display: 'flex', flexDirection: 'column', gap: '24px' },
+  disclaimerText: { fontSize: '0.82rem', color: '#666', lineHeight: '1.6', margin: 0, fontStyle: 'italic' },
+  articleBody: { maxWidth: '780px', margin: '0 auto', boxSizing: 'border-box' },
+  articleInner: { display: 'flex', flexDirection: 'column', gap: '20px' },
   articleImage: {
-    width: '100%', borderRadius: '12px',
-    objectFit: 'cover', maxHeight: '360px',
-    border: '1px solid #deeede',
+    width: '100%', borderRadius: '12px', objectFit: 'cover',
+    maxHeight: '300px', border: '1px solid #deeede',
   },
   authorBox: {
-    display: 'flex', alignItems: 'center',
-    gap: '14px', background: 'white',
-    border: '1px solid #deeede',
-    borderRadius: '10px', padding: '16px 20px',
+    display: 'flex', alignItems: 'center', gap: '14px',
+    background: 'white', border: '1px solid #deeede',
+    borderRadius: '10px', padding: '14px 18px',
   },
   authorAvatar: {
-    width: '48px', height: '48px',
-    borderRadius: '50%', background: '#e8f5e9',
-    border: '2px solid #c8e6c9',
+    width: '44px', height: '44px', borderRadius: '50%',
+    background: '#e8f5e9', border: '2px solid #c8e6c9',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '0.85rem', fontWeight: '800', color: '#2d6a2d',
-    flexShrink: 0,
+    fontSize: '0.85rem', fontWeight: '800', color: '#2d6a2d', flexShrink: 0,
   },
-  authorName: {
-    fontSize: '0.95rem', fontWeight: '700',
-    color: '#1a3d1a', margin: 0,
-  },
-  authorTitle: {
-    fontSize: '0.8rem', color: '#888',
-    margin: '3px 0 0',
-  },
+  authorName: { fontSize: '0.95rem', fontWeight: '700', color: '#1a3d1a', margin: 0 },
+  authorTitle: { fontSize: '0.8rem', color: '#888', margin: '3px 0 0' },
   articlePara: {
-    fontSize: '0.97rem', color: '#444',
-    lineHeight: '1.85', margin: 0,
+    fontSize: '0.95rem', color: '#444', lineHeight: '1.85', margin: 0,
     background: 'white', border: '1px solid #eee',
-    borderRadius: '8px', padding: '16px 20px',
+    borderRadius: '8px', padding: '14px 18px',
   },
   citationBox: {
-    background: '#fffbf0',
-    border: '1px solid #f5e6b8',
-    borderLeft: '4px solid #f5a623',
-    borderRadius: '8px', padding: '18px 20px',
+    background: '#fffbf0', border: '1px solid #f5e6b8',
+    borderLeft: '4px solid #f5a623', borderRadius: '8px', padding: '16px 18px',
   },
   citationLabel: {
-    fontSize: '0.72rem', fontWeight: '700',
-    color: '#b7770d', textTransform: 'uppercase',
-    letterSpacing: '0.8px', marginBottom: '8px',
+    fontSize: '0.72rem', fontWeight: '700', color: '#b7770d',
+    textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '8px',
   },
-  citationText: {
-    fontSize: '0.85rem', color: '#555',
-    lineHeight: '1.6', marginBottom: '10px',
-  },
-  citationLink: {
-    color: '#2d6a2d', fontWeight: '600',
-    textDecoration: 'underline',
-  },
+  citationText: { fontSize: '0.85rem', color: '#555', lineHeight: '1.6', marginBottom: '10px' },
+  citationLink: { color: '#2d6a2d', fontWeight: '600', textDecoration: 'underline' },
   citationDisclaimer: {
-    fontSize: '0.8rem', color: '#888',
-    lineHeight: '1.6', margin: 0,
+    fontSize: '0.8rem', color: '#888', lineHeight: '1.6', margin: 0,
     fontStyle: 'italic', borderTop: '1px solid #f0e0b0',
     paddingTop: '10px', marginTop: '10px',
   },
