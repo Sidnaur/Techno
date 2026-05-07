@@ -66,7 +66,7 @@ Techno/
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/YOUR_USERNAME/Techno.git
+git clone https://github.com/Sidnaur/Techno.git
 cd Techno
 ```
 
@@ -134,7 +134,7 @@ The frontend connects to the AgriVision backend for disease detection.
 - **Local:** `http://localhost:3000`
 - **Deployed:** `https://techno-backend-1b0v.onrender.com`
 
-See the [backend repository](https://github.com/YOUR_USERNAME/techno-backend) for setup instructions.
+See the [backend repository](https://github.com/tomandjerry17/techno-backend.git) for setup instructions.
 
 ---
 
